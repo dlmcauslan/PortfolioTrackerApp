@@ -13,12 +13,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortfolioTrackerApp.Database_Files
+namespace PortfolioTrackerApp
 {
 	class DatabaseContract
 	{
 		// The database path
-		public const string PATH = "Data/PortfolioDatabase.db";
+		public const String PATH = "PortfolioDatabase.sqlite";
 
 		/**
 		 * Class to hold the database contract for the Purchases table which
@@ -28,46 +28,46 @@ namespace PortfolioTrackerApp.Database_Files
 		abstract class Purchases
 		{
 			// The table name
-			public const string TABLE = "Purchases";
+			public const String TABLE = "Purchases";
 
 			// Columns 
-			public const string ID = "_ID";
-			public const string CODE = "Stock_Code";
-			public const string NUMBER = "Number_Purchased";
-			public const string DATE = "Date";
-			public const string PRICE = "Price";
+			public const String ID = "_ID";
+			public const String CODE = "Stock_Code";
+			public const String NUMBER = "Number_Purchased";
+			public const String DATE = "Date";
+			public const String PRICE = "Price";
 		}
 
 		/**
 		 * Class to hold the contract for the Dividends table which contains a
 		 * record of all of the dividend payments that I have recieved.
 		 */
-		 abstract class Dividends
+		abstract class Dividends
 		{
 			// The table name
-			public const string TABLE = "Dividends";
+			public const String TABLE = "Dividends";
 
 			// Columns
-			public const string ID = "_ID";
-			public const string CODE = "Stock_Code";
-			public const string DATE = "Date";
-			public const string AMOUNT = "Dividend_Amount";
+			public const String ID = "_ID";
+			public const String CODE = "Stock_Code";
+			public const String DATE = "Date";
+			public const String AMOUNT = "Dividend_Amount";
 		}
 
 		/**
 		 * Class to hold the contract for the Historical_Data table which contains
 		 * the historical price data of the stocks in my portfolio.
 		 */
-		 abstract class Historical
+		abstract class Historical
 		{
 			// The table name
-			public const string TABLE = "Historical_Data";
+			public const String TABLE = "Historical_Data";
 
 			// Columns
-			public const string PK = TABLE + "_PK";
-			public const string CODE = "Stock_Code";
-			public const string DATE = "Date";
-			public const string PRICE = "Price";
+			public const String PK = TABLE + "_PK";
+			public const String CODE = "Stock_Code";
+			public const String DATE = "Date";
+			public const String PRICE = "Price";
 		}
 	}
 }

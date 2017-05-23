@@ -13,3 +13,12 @@ C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\o
 C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\obj\Debug\PortfolioTrackerApp.exe
 C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\obj\Debug\PortfolioTrackerApp.pdb
 C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\obj\Debug\App.baml
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\EntityFramework.dll
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\System.Data.SQLite.dll
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\System.Data.SQLite.EF6.dll
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\System.Data.SQLite.Linq.dll
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\EntityFramework.xml
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\System.Data.SQLite.xml
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\System.Data.SQLite.dll.config

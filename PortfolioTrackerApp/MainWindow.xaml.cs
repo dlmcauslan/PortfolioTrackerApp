@@ -23,6 +23,9 @@ namespace PortfolioTrackerApp
 		public MainWindow()
 		{
 			InitializeComponent();
+			// Create database
+			DatabaseFunctions database = new DatabaseFunctions(DatabaseContract.PATH);
+			database.CreateDatabase();
 		}
 
 		private void AddPurchaseButton_Click(object sender, RoutedEventArgs e)
