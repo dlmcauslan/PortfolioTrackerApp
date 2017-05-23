@@ -1,0 +1,106 @@
+﻿<Window x:Class="PortfolioTrackerApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PortfolioTrackerApp"
+        mc:Ignorable="d"
+        Title="Portfolio Tracker" Height="500" Width="700">
+    <Grid>
+        <TabControl BorderThickness="0">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="FontSize" Value="18"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Grid Name="Panel">
+                                    <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="15,10"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Panel" Property="TextElement.FontWeight"  Value="SemiBold" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="Home">
+                <Grid Background="#10000000">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Label Margin="10,10,10,10" Grid.Row="0" HorizontalAlignment="Center" Content="Home page - Portfolio graph goes here." Grid.ColumnSpan="2"/>
+
+                    <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
+                        <!-- Portfolio overview table -->
+                        <DataGrid ItemsSource="{Binding XPath=Expense}" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Symbol" Binding="{Binding XPath=@ExpenseType}"/>
+                                <DataGridTextColumn Header="Name" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Price" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Number Owned" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Total Spent" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Total Dividends" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Total Value" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Profit %" Binding="{Binding XPath=@ExpenseAmount}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Charts">
+                <Label Content="Charts here..." />
+            </TabItem>
+            <TabItem Header="Purchases" FontSize="16">
+                <Grid Background="#10000000">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <!-- Grid containing purchases buttons -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <!-- Add Purchase Button-->
+                        <Button x:Name="AddPurchaseButton" Click ="AddPurchaseButton_Click" Grid.Column="0" Style="{StaticResource buttonStyle}">Add Purchase</Button>
+                        <!-- Add Sale Button-->
+                        <Button x:Name="AddSaleButton" Click ="AddSaleButton_Click" Grid.Column="1" Style="{StaticResource buttonStyle}">Add Sale</Button>
+                        <!-- Edit Purchase/Sale Button-->
+                        <Button x:Name="EditPurchaseButton" Click ="EditPurchaseButton_Click" Grid.Column="2" Style="{StaticResource buttonStyle}">Edit Purchase/Sale</Button>
+                    </Grid>
+                    <!-- Table of purchases -->
+                    <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
+                        <DataGrid ItemsSource="{Binding XPath=Expense}" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Purchase Date" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Symbol" Binding="{Binding XPath=@ExpenseType}"/>
+                                <DataGridTextColumn Header="Price" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Number Purchased" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Total Spent" Binding="{Binding XPath=@ExpenseAmount}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Dividends">
+                <Label Content="Dividends here..." />
+            </TabItem>
+            <TabItem Header="Value Path">
+                <Label Content="Value path goes here..." />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
