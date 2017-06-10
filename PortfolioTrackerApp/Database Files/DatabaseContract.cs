@@ -36,6 +36,7 @@ namespace PortfolioTrackerApp
 			public const String NUMBER = "Number_Purchased";
 			public const String DATE = "Date"; // text in form dd/mm/yyyy
 			public const String PRICE = "Price"; // integer in cents
+			public const String COLUMNS = CODE + ", " + DATE + ", " + NUMBER + ", " + PRICE;
 
 			// Table create string
 			public const String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE + " (" +
@@ -58,7 +59,9 @@ namespace PortfolioTrackerApp
 			public const String ID = "_ID";
 			public const String CODE = "Stock_Code";
 			public const String DATE = "Date";		// In the format dd/mm/yyyy
-			public const String AMOUNT = "Dividend_Amount";		// In cents
+			public const String AMOUNT = "Dividend_Amount";     // In cents
+			public const String COLUMNS = CODE + ", " + DATE + ", " + AMOUNT;
+
 
 			// Table create string
 			public const String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE + " (" +
@@ -80,6 +83,8 @@ namespace PortfolioTrackerApp
 			public const String CODE = "Stock_Code";
 			public const String DATE = "Date";		// in the format dd/mm/yyyy
 			public const String PRICE = "Price";    // in cents
+			public const String COLUMNS = CODE + ", " + DATE + ", " + PRICE;
+
 
 			// Create table string
 			public const String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE + " (" +

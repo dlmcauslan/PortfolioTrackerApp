@@ -21,24 +21,29 @@ namespace PortfolioTrackerApp
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		public DatabaseFunctions mDatabase;
+
 		public MainWindow()
 		{
 			InitializeComponent();
 			// Create database
-			DatabaseFunctions database = new DatabaseFunctions(DatabaseContract.PATH);
+			mDatabase = new DatabaseFunctions(DatabaseContract.PATH);
 			// Create tables
 			//database.DropTable(DatabaseContract.Purchases.TABLE);
-			database.CreateTable(DatabaseContract.Purchases.CREATE_TABLE);
-			database.CreateTable(DatabaseContract.Dividends.CREATE_TABLE);
-			database.CreateTable(DatabaseContract.Historical.CREATE_TABLE);
+			mDatabase.CreateTable(DatabaseContract.Purchases.CREATE_TABLE);
+			mDatabase.CreateTable(DatabaseContract.Dividends.CREATE_TABLE);
+			mDatabase.CreateTable(DatabaseContract.Historical.CREATE_TABLE);
 
 			// Uncomment to add some test data to the database
-			testDatabase(database);
+			testDatabase(mDatabase);
 		}
 
 		private void AddPurchaseButton_Click(object sender, RoutedEventArgs e)
 		{
-
+			Console.WriteLine("Here");
+			//MessageBox.Show("Hello, world!");
+			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase);
+			addPurchase.ShowDialog();
 		}
 
 		private void AddSaleButton_Click(object sender, RoutedEventArgs e)
@@ -57,12 +62,8 @@ namespace PortfolioTrackerApp
 		private void testDatabase(DatabaseFunctions database)
 		{
 			//database.droptable(databasecontract.Historical.TABLE);
-			String testPurchasesColumns = String.Concat(DatabaseContract.Purchases.CODE,
-				", ", DatabaseContract.Purchases.DATE,
-				", ", DatabaseContract.Purchases.NUMBER,
-				", ", DatabaseContract.Purchases.PRICE);
 			String testPurchasesValues = String.Format("'VAS', '27/06/2016', {0}, {1}", 32, 1234);
-			int insertionSuccessful = database.InsertData(DatabaseContract.Purchases.TABLE, testPurchasesColumns, testPurchasesValues);
+			int insertionSuccessful = database.InsertData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.COLUMNS, testPurchasesValues);
 			Console.WriteLine(insertionSuccessful);
 
 			String testPurchasesDelete = DatabaseContract.Purchases.ID + " = 40";
@@ -75,12 +76,13 @@ namespace PortfolioTrackerApp
 			int updateSuccess = database.EditData(DatabaseContract.Purchases.TABLE, testPurchaseSet, testCondition);
 			Console.WriteLine(updateSuccess);
 
-			String testCols = "*";
-			SQLiteDataReader reader = database.SelectData(DatabaseContract.Purchases.TABLE, testCols, "");
-			while (reader.Read())
-			{
-				Console.WriteLine(reader["_ID"] + " " + reader[DatabaseContract.Purchases.CODE]);
-			}
+			// This doesn't work because need to close the database!!!!
+			//String testCols = "*";
+			//SQLiteDataReader reader = database.SelectData(DatabaseContract.Purchases.TABLE, testCols, "");
+			//while (reader.Read())
+			//{
+			//	Console.WriteLine(reader["_ID"] + " " + reader[DatabaseContract.Purchases.CODE]);
+			//}
 
 			
 		}
