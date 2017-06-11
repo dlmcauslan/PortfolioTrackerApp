@@ -34,7 +34,7 @@
             <TextBox Name="textboxDate" Grid.Column="1" Grid.Row="1" MinWidth="80" HorizontalContentAlignment="Center" Margin="5,0,5,0">dd/mm/yyyy</TextBox>
 
             <!-- Number Purchased -->
-            <Label Grid.Column="2" Grid.Row="0" HorizontalContentAlignment="Center">Number Purchased</Label>
+            <Label Name="labelNumberPurchased" Grid.Column="2" Grid.Row="0" HorizontalContentAlignment="Center">Number Purchased</Label>
             <TextBox Name="textboxNumberPurchased" Grid.Column="2" Grid.Row="1" MinWidth="80" HorizontalContentAlignment="Center" Margin="5,0,5,0">0</TextBox>
         
             <!-- Stock Price ($)-->

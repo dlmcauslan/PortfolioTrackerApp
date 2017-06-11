@@ -29,7 +29,7 @@ namespace PortfolioTrackerApp
 			// Create database
 			mDatabase = new DatabaseFunctions(DatabaseContract.PATH);
 			// Create tables
-			//database.DropTable(DatabaseContract.Purchases.TABLE);
+			//mDatabase.DropTable(DatabaseContract.Purchases.TABLE);
 			mDatabase.CreateTable(DatabaseContract.Purchases.CREATE_TABLE);
 			mDatabase.CreateTable(DatabaseContract.Dividends.CREATE_TABLE);
 			mDatabase.CreateTable(DatabaseContract.Historical.CREATE_TABLE);
@@ -38,17 +38,19 @@ namespace PortfolioTrackerApp
 			testDatabase(mDatabase);
 		}
 
+		/*
+		 * Opens a new addPurchasePopup on clicking the AddPurchaseButton
+		 */
 		private void AddPurchaseButton_Click(object sender, RoutedEventArgs e)
 		{
-			Console.WriteLine("Here");
-			//MessageBox.Show("Hello, world!");
-			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase);
+			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase, true);
 			addPurchase.ShowDialog();
 		}
 
 		private void AddSaleButton_Click(object sender, RoutedEventArgs e)
 		{
-
+			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase, false);
+			addPurchase.ShowDialog();
 		}
 
 		private void EditPurchaseButton_Click(object sender, RoutedEventArgs e)
@@ -62,9 +64,9 @@ namespace PortfolioTrackerApp
 		private void testDatabase(DatabaseFunctions database)
 		{
 			//database.droptable(databasecontract.Historical.TABLE);
-			String testPurchasesValues = String.Format("'VAS', '27/06/2016', {0}, {1}", 32, 1234);
-			int insertionSuccessful = database.InsertData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.COLUMNS, testPurchasesValues);
-			Console.WriteLine(insertionSuccessful);
+			//String testPurchasesValues = String.Format("'VAS', '27/06/2016', {0}, {1}", 32, 1234);
+			//int insertionSuccessful = database.InsertData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.COLUMNS, testPurchasesValues);
+			//Console.WriteLine(insertionSuccessful);
 
 			String testPurchasesDelete = DatabaseContract.Purchases.ID + " = 40";
 			int deleteSuccessful = database.DeleteData(DatabaseContract.Purchases.TABLE, testPurchasesDelete);
