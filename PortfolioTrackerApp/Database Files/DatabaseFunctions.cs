@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -149,13 +150,15 @@ namespace PortfolioTrackerApp
 		 * @return the SQLiteDataReader object that contains the query results
 		 */
 		// This doesn't work because need to close the database!!!!
-		public SQLiteDataReader SelectData(String tableName, String columns, String query)
+		public DataTable SelectData(String tableName, String columns="*", String query="")
 		{
 			mDatabaseConnection.Open();
 			String commandString = "SELECT " + columns + " FROM " + tableName + " " + query;
-			SQLiteCommand command = new SQLiteCommand(commandString, mDatabaseConnection);
-			SQLiteDataReader reader = command.ExecuteReader();
-			return reader;
+			SQLiteDataAdapter dataAdapter  = new SQLiteDataAdapter(commandString, mDatabaseConnection);
+			DataTable data = new DataTable();
+			dataAdapter.Fill(data);
+			mDatabaseConnection.Close();
+			return data;
 		}
 	}
 }

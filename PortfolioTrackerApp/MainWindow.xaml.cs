@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace PortfolioTrackerApp
 	public partial class MainWindow : Window
 	{
 		public DatabaseFunctions mDatabase;
+		private DataTable mPurchasesTable;
 
 		public MainWindow()
 		{
@@ -36,6 +38,9 @@ namespace PortfolioTrackerApp
 
 			// Uncomment to add some test data to the database
 			testDatabase(mDatabase);
+
+			// Populate tables from database
+			updatePurchaseTable();
 		}
 
 		/*
@@ -44,18 +49,46 @@ namespace PortfolioTrackerApp
 		private void AddPurchaseButton_Click(object sender, RoutedEventArgs e)
 		{
 			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase, true);
-			addPurchase.ShowDialog();
+			// Updates the table if the dialog returns true. Note then line below actually opens th
+			// dialog too.
+			if (addPurchase.ShowDialog() == true) updatePurchaseTable(); 
 		}
 
 		private void AddSaleButton_Click(object sender, RoutedEventArgs e)
 		{
 			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase, false);
-			addPurchase.ShowDialog();
+			if (addPurchase.ShowDialog() == true) updatePurchaseTable();
 		}
 
 		private void EditPurchaseButton_Click(object sender, RoutedEventArgs e)
 		{
 
+		}
+
+		private void DeletePurchaseButton_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		/**
+		 * Updates the purchases datagrid from the sql database.
+		 * Creates Price in $ column and Total cost column.
+		 * Call this method anytime the purchases database has been modified
+		 */
+		private void updatePurchaseTable()
+		{
+			// Select data from database
+			mPurchasesTable = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.COLUMNS);
+			// Add Price (in dollars) column and Total cost column to datatable
+			mPurchasesTable.Columns.Add(new DataColumn("Price_$", typeof(float)));
+			mPurchasesTable.Columns.Add(new DataColumn("Total_Cost", typeof(float)));
+			foreach (DataRow row in mPurchasesTable.Rows)
+			{
+				row.SetField("Price_$", Convert.ToSingle(row.Field<Int64>(DatabaseContract.Purchases.PRICE)) / 100);
+				row.SetField("Total_Cost", row.Field<float>("Price_$") * Convert.ToSingle(row.Field<Int64>(DatabaseContract.Purchases.NUMBER)));
+			}
+			// Use the datatable as the data source for the datagrid
+			dataGridPurchases.ItemsSource = mPurchasesTable.DefaultView;
 		}
 
 		/**
@@ -88,5 +121,6 @@ namespace PortfolioTrackerApp
 
 			
 		}
+
 	}
 }

@@ -72,24 +72,62 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <!-- Add Purchase Button-->
-                        <Button x:Name="AddPurchaseButton" Click ="AddPurchaseButton_Click" Grid.Column="0" Style="{StaticResource buttonStyle}">Add Purchase</Button>
+                        <Button Name="AddPurchaseButton" Click ="AddPurchaseButton_Click" Grid.Column="0" Style="{StaticResource buttonStyle}">Add Purchase</Button>
                         <!-- Add Sale Button-->
-                        <Button x:Name="AddSaleButton" Click ="AddSaleButton_Click" Grid.Column="1" Style="{StaticResource buttonStyle}">Add Sale</Button>
+                        <Button Name="AddSaleButton" Click ="AddSaleButton_Click" Grid.Column="1" Style="{StaticResource buttonStyle}">Add Sale</Button>
                         <!-- Edit Purchase/Sale Button-->
-                        <Button x:Name="EditPurchaseButton" Click ="EditPurchaseButton_Click" Grid.Column="2" Style="{StaticResource buttonStyle}">Edit Purchase/Sale</Button>
+                        <Button Name="EditPurchaseButton" Click ="EditPurchaseButton_Click" Grid.Column="2" Style="{StaticResource buttonStyle}">Edit Purchase/Sale</Button>
+                        <!-- Delete Purchase Button-->
+                        <Button Name="DeletePurchaseButton" Click="DeletePurchaseButton_Click" Grid.Column="3" Style="{StaticResource buttonStyle}">Delete</Button>
                     </Grid>
                     <!-- Table of purchases -->
                     <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
-                        <DataGrid ItemsSource="{Binding XPath=Expense}" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0">
+                        <DataGrid Name="dataGridPurchases" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0" IsReadOnly="True">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Purchase Date" Binding="{Binding XPath=@ExpenseAmount}"/>
-                                <DataGridTextColumn Header="Symbol" Binding="{Binding XPath=@ExpenseType}"/>
-                                <DataGridTextColumn Header="Price" Binding="{Binding XPath=@ExpenseAmount}"/>
-                                <DataGridTextColumn Header="Number Purchased" Binding="{Binding XPath=@ExpenseAmount}"/>
-                                <DataGridTextColumn Header="Total Spent" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Binding="{Binding Date}" Header="Purchase Date">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Center" />
+                                            <Setter Property="Margin" Value="4"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Stock_Code}" Header="Symbol">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Center" />
+                                            <Setter Property="Margin" Value="4"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Price_$, StringFormat=F2}" Header="Price">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Center" />
+                                            <Setter Property="Margin" Value="4"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Number_Purchased}" Header="Number Purchased">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Center" />
+                                            <Setter Property="Margin" Value="4"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Total_Cost, StringFormat=F2}" Header="Total Cost">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Center" />
+                                            <Setter Property="Margin" Value="4"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
