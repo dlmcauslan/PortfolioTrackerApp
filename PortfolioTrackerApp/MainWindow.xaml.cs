@@ -67,7 +67,21 @@ namespace PortfolioTrackerApp
 
 		private void DeletePurchaseButton_Click(object sender, RoutedEventArgs e)
 		{
-
+			DataRowView selectedRow = (DataRowView)dataGridPurchases.SelectedItem;
+			if (selectedRow == null)
+			{
+				MessageBox.Show("No purchase selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			else
+			{
+				MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this purchase?", "Delete purchase?", MessageBoxButton.YesNo);
+				if (result == MessageBoxResult.Yes)
+				{
+					Int64 rowID = selectedRow.Row.Field<Int64>(DatabaseContract.Purchases.ID);
+					mDatabase.DeleteData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.ID + " = " + rowID);		
+				}
+				updatePurchaseTable();
+			}
 		}
 
 		/**
@@ -78,7 +92,7 @@ namespace PortfolioTrackerApp
 		private void updatePurchaseTable()
 		{
 			// Select data from database
-			mPurchasesTable = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.COLUMNS);
+			mPurchasesTable = mDatabase.SelectData(DatabaseContract.Purchases.TABLE);
 			// Add Price (in dollars) column and Total cost column to datatable
 			mPurchasesTable.Columns.Add(new DataColumn("Price_$", typeof(float)));
 			mPurchasesTable.Columns.Add(new DataColumn("Total_Cost", typeof(float)));

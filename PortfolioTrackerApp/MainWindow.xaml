@@ -42,7 +42,7 @@
 
                     <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
                         <!-- Portfolio overview table -->
-                        <DataGrid ItemsSource="{Binding XPath=Expense}" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0">
+                        <DataGrid ItemsSource="{Binding XPath=Expense}" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" RowHeaderWidth="0" BorderThickness="0,0,0,0">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Symbol" Binding="{Binding XPath=@ExpenseType}"/>
                                 <DataGridTextColumn Header="Name" Binding="{Binding XPath=@ExpenseAmount}"/>
@@ -60,7 +60,7 @@
             <TabItem Header="Charts">
                 <Label Content="Charts here..." />
             </TabItem>
-            <TabItem Header="Purchases" FontSize="16">
+            <TabItem Header="Purchases" FontSize="18">
                 <Grid Background="#10000000">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -86,7 +86,7 @@
                     </Grid>
                     <!-- Table of purchases -->
                     <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
-                        <DataGrid Name="dataGridPurchases" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0" IsReadOnly="True">
+                        <DataGrid Name="dataGridPurchases" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0" IsReadOnly="True">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Binding="{Binding Date}" Header="Purchase Date">
                                     <DataGridTextColumn.ElementStyle>
