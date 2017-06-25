@@ -25,6 +25,8 @@ namespace PortfolioTrackerApp
 		public DatabaseFunctions mDatabase;
 		private DataTable mPurchasesTable;
 
+		
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -37,7 +39,7 @@ namespace PortfolioTrackerApp
 			mDatabase.CreateTable(DatabaseContract.Historical.CREATE_TABLE);
 
 			// Uncomment to add some test data to the database
-			testDatabase(mDatabase);
+			//testDatabase(mDatabase);
 
 			// Populate tables from database
 			updatePurchaseTable();
@@ -48,23 +50,41 @@ namespace PortfolioTrackerApp
 		 */
 		private void AddPurchaseButton_Click(object sender, RoutedEventArgs e)
 		{
-			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase, true);
+			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase, AddPurchasePopup.WindowType.Purchases);
 			// Updates the table if the dialog returns true. Note then line below actually opens th
 			// dialog too.
 			if (addPurchase.ShowDialog() == true) updatePurchaseTable(); 
 		}
 
+		/*
+		 * Opens a new addPurchasePopup (configured as a sale) on clicking the AddSaleButton
+		 */
 		private void AddSaleButton_Click(object sender, RoutedEventArgs e)
 		{
-			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase, false);
+			AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase, AddPurchasePopup.WindowType.Sales);
 			if (addPurchase.ShowDialog() == true) updatePurchaseTable();
 		}
 
+		/*
+		 * Opens a new addPurchasePopup (configured as an edit purchase) on clicking the EditPurchaseButton
+		 */
 		private void EditPurchaseButton_Click(object sender, RoutedEventArgs e)
 		{
-
+			DataRowView selectedRow = (DataRowView)dataGridPurchases.SelectedItem;
+			if (selectedRow == null)
+			{
+				MessageBox.Show("No purchase selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			else
+			{
+				AddPurchasePopup addPurchase = new AddPurchasePopup(mDatabase, AddPurchasePopup.WindowType.EditPurchase, selectedRow);
+				if (addPurchase.ShowDialog() == true) updatePurchaseTable();
+			}
 		}
 
+		/*
+		 * Asks the user if they want to delete a purchase from the database.
+		 */
 		private void DeletePurchaseButton_Click(object sender, RoutedEventArgs e)
 		{
 			DataRowView selectedRow = (DataRowView)dataGridPurchases.SelectedItem;

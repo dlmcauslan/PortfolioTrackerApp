@@ -14,7 +14,7 @@ namespace PortfolioTrackerApp
 		 */
 		public static int DollarsToCents(float dollars)
 		{
-			return (int)(100 * dollars);
+			return (int)Math.Round(100 * dollars);
 		}
 
 		/*

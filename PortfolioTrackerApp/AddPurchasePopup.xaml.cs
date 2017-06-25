@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,23 +21,29 @@ namespace PortfolioTrackerApp
 	public partial class AddPurchasePopup : Window
 	{
 		private DatabaseFunctions mDatabase;
-		private bool mIsBuy;
-		public AddPurchasePopup(DatabaseFunctions database, bool isBuy)
+		public enum WindowType { Purchases, Sales, EditPurchase };
+		private WindowType mBuySellEdit;
+		private DataRowView mRowData;
+		public AddPurchasePopup(DatabaseFunctions database, WindowType buySellEdit, DataRowView rowData = null)
 		{
 			InitializeComponent();
 			mDatabase = database;
-			mIsBuy = isBuy;
-			// If the bool isBuy == true, then it is a purchase dialog, otherwise
-			// it is a stock sale dialog. Update the form correspondingly.
-			if (mIsBuy)
+			mBuySellEdit = buySellEdit;
+			mRowData = rowData;
+			// Update the dialog depending on whether the WindowType is Purchases, Sales or EditPurchase.
+			String[] windowTitle = { "Add Purchase", "Add Sale", "Edit Purchase/Sale" };
+			String[] purchasedContent = { "Number Purchased", "Number Sold", "Number Purchased/Sold" };
+			Title = windowTitle[(int)mBuySellEdit];
+			labelNumberPurchased.Content = purchasedContent[(int)mBuySellEdit];
+
+			// If its an Edit Purchase window fill the data fields with the imported rowData
+			if (mBuySellEdit == WindowType.EditPurchase)
 			{
-				labelNumberPurchased.Content = "Number Purchased";
-				Title = "Add Purchase";
-			}
-			else
-			{
-				labelNumberPurchased.Content = "Number Sold";
-				Title = "Add Sale";
+				textboxStockCode.Text =mRowData.Row.Field<String>(DatabaseContract.Purchases.CODE);
+				textboxNumberPurchased.Text = mRowData.Row.Field<Int64>(DatabaseContract.Purchases.NUMBER).ToString();
+				textboxDate.Text = mRowData.Row.Field<String>(DatabaseContract.Purchases.DATE);
+				textboxPrice.Text = mRowData.Row.Field<float>("Price_$").ToString();
+
 			}
 		}
 
@@ -45,7 +52,7 @@ namespace PortfolioTrackerApp
 			// Check that the data is ok
 			// Check stock code
 			String string1 = "Purchase";
-			if (!mIsBuy) string1 = "Sale";
+			if (mBuySellEdit.Equals(WindowType.Sales)) string1 = "Sale";
 			if (textboxStockCode.Text == "")
 			{
 				MessageBox.Show(string1 + " must have a stock code.", "Data Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -53,10 +60,15 @@ namespace PortfolioTrackerApp
 			}
 			// Check number purchased
 			String string2 = "purchased";
-			if (!mIsBuy) string2 = "sold";
-			if (!(int.TryParse(textboxNumberPurchased.Text, out int numberPurchasedInt)) | numberPurchasedInt <= 0)
+			if (mBuySellEdit.Equals(WindowType.Sales)) string2 = "sold";
+			if (!(int.TryParse(textboxNumberPurchased.Text, out int numberPurchasedInt)))
 			{
-				MessageBox.Show("Number " + string2 +" must be a number and also be greater than 0.", "Data Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show("Number " + string2 +" must be a number.", "Data Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				return;
+			}
+			if (mBuySellEdit != WindowType.EditPurchase & numberPurchasedInt <= 0)
+			{
+				MessageBox.Show("Number " + string2 + " must be greater than 0.", "Data Error", MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
 			// Check price
@@ -72,15 +84,28 @@ namespace PortfolioTrackerApp
 				return;
 			}
 
+			// TODO
 			// Check that stock is in historical database, if it isn't download the historical
 			// data for that stock
 
 			// Add the data to the Purchases database
-			if (!mIsBuy) numberPurchasedInt = -numberPurchasedInt; // If its a sale, negate the number (sold) when adding to the database.
-			String purchasesValues = String.Format("'{0}', '{1}', {2}, {3}", textboxStockCode.Text.ToUpper(), textboxDate.Text, numberPurchasedInt, Utilities.DollarsToCents(priceDollars));
-			Console.WriteLine(purchasesValues);
-			int insertionSuccessful = mDatabase.InsertData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.COLUMNS, purchasesValues);
-			Console.WriteLine(insertionSuccessful);
+			if (mBuySellEdit.Equals(WindowType.Sales)) numberPurchasedInt = -numberPurchasedInt; // If its a sale, negate the number (sold) when adding to the database.
+			// If window is an edit purchase call EditData, otherwise call InsertData
+			int databaseActionSuccessful = 0;
+			if (mBuySellEdit == WindowType.EditPurchase)
+			{
+				String setStatement = DatabaseContract.Purchases.CODE + " = '" + textboxStockCode.Text.ToUpper()
+								+ "', " + DatabaseContract.Purchases.NUMBER + " = " + numberPurchasedInt
+								+ ", " + DatabaseContract.Purchases.DATE + " = '" + textboxDate.Text
+								+ "', " + DatabaseContract.Purchases.PRICE + " = " + Utilities.DollarsToCents(priceDollars);
+				String whereStatement = DatabaseContract.Purchases.ID + " = " + mRowData.Row.Field<Int64>(DatabaseContract.Purchases.ID).ToString();
+				databaseActionSuccessful = mDatabase.EditData(DatabaseContract.Purchases.TABLE, setStatement, whereStatement);
+			}
+			else
+			{
+				String purchasesValues = String.Format("'{0}', '{1}', {2}, {3}", textboxStockCode.Text.ToUpper(), textboxDate.Text, numberPurchasedInt, Utilities.DollarsToCents(priceDollars));
+				databaseActionSuccessful = mDatabase.InsertData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.COLUMNS, purchasesValues);
+			}
 			// If all is succesful close the dialog
 			this.DialogResult = true;
 		}
