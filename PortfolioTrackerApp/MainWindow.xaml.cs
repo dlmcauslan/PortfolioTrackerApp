@@ -24,6 +24,7 @@ namespace PortfolioTrackerApp
 	{
 		public DatabaseFunctions mDatabase;
 		private DataTable mPurchasesTable;
+		private DataTable mDividendsTable;
 
 		
 
@@ -43,7 +44,12 @@ namespace PortfolioTrackerApp
 
 			// Populate tables from database
 			updatePurchaseTable();
+			updateDividendsTable();
 		}
+
+		/*********************************
+		 * Purchases tab methods
+		 ********************************/
 
 		/*
 		 * Opens a new addPurchasePopup on clicking the AddPurchaseButton
@@ -104,7 +110,7 @@ namespace PortfolioTrackerApp
 			}
 		}
 
-		/**
+		/*
 		 * Updates the purchases datagrid from the sql database.
 		 * Creates Price in $ column and Total cost column.
 		 * Call this method anytime the purchases database has been modified
@@ -114,18 +120,96 @@ namespace PortfolioTrackerApp
 			// Select data from database
 			mPurchasesTable = mDatabase.SelectData(DatabaseContract.Purchases.TABLE);
 			// Add Price (in dollars) column and Total cost column to datatable
-			mPurchasesTable.Columns.Add(new DataColumn("Price_$", typeof(float)));
-			mPurchasesTable.Columns.Add(new DataColumn("Total_Cost", typeof(float)));
+			String priceColumn = "Price_$";
+			String totalColumn = "Total_Cost";
+			mPurchasesTable.Columns.Add(new DataColumn(priceColumn, typeof(float)));
+			mPurchasesTable.Columns.Add(new DataColumn(totalColumn, typeof(float)));
 			foreach (DataRow row in mPurchasesTable.Rows)
 			{
-				row.SetField("Price_$", Convert.ToSingle(row.Field<Int64>(DatabaseContract.Purchases.PRICE)) / 100);
-				row.SetField("Total_Cost", row.Field<float>("Price_$") * Convert.ToSingle(row.Field<Int64>(DatabaseContract.Purchases.NUMBER)));
+				row.SetField(priceColumn, Convert.ToSingle(row.Field<Int64>(DatabaseContract.Purchases.PRICE)) / 100);
+				row.SetField(totalColumn, row.Field<float>(priceColumn) * Convert.ToSingle(row.Field<Int64>(DatabaseContract.Purchases.NUMBER)));
 			}
 			// Use the datatable as the data source for the datagrid
 			dataGridPurchases.ItemsSource = mPurchasesTable.DefaultView;
 		}
 
-		/**
+
+		/*********************************
+		 * Dividends tab methods
+		 ********************************/
+
+		/*
+		 * Opens a new addDividendPopup on clicking the AddDividendButton
+		 */
+		private void AddDividendButton_Click(object sender, RoutedEventArgs e)
+		{
+			AddDividendPopup addDividend = new AddDividendPopup(mDatabase, AddDividendPopup.WindowType.AddDividend);
+			// Updates the table if the dialog returns true. Note then line below actually opens the
+			// dialog too.
+			if (addDividend.ShowDialog() == true) updateDividendsTable();
+		}
+
+		/*
+		 * Opens a new addDividendPopup (configured as and edit dividend popup) on clicking the EditDividendButton
+		 */
+		private void EditDividendButton_Click(object sender, RoutedEventArgs e)
+		{
+			DataRowView selectedRow = (DataRowView)dataGridDividends.SelectedItem;
+			if (selectedRow == null)
+			{
+				MessageBox.Show("No dividend selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			else
+			{
+				AddDividendPopup addDividend = new AddDividendPopup(mDatabase, AddDividendPopup.WindowType.EditDividend, selectedRow);
+				if (addDividend.ShowDialog() == true) updateDividendsTable();
+			}
+		}
+
+		/*
+		 * Opens a warning box to make sure the user wishes to delete the selected item.
+		 */
+		private void DeleteDividendButton_Click(object sender, RoutedEventArgs e)
+		{
+			DataRowView selectedRow = (DataRowView)dataGridDividends.SelectedItem;
+			if (selectedRow == null)
+			{
+				MessageBox.Show("No dividend selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			else
+			{
+				MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this dividend?", "Delete dividend?", MessageBoxButton.YesNo);
+				if (result == MessageBoxResult.Yes)
+				{
+					Int64 rowID = selectedRow.Row.Field<Int64>(DatabaseContract.Dividends.ID);
+					mDatabase.DeleteData(DatabaseContract.Dividends.TABLE, DatabaseContract.Dividends.ID + " = " + rowID);
+				}
+				updateDividendsTable();
+			}
+		}
+
+		/*
+		 * Updates the dividends datagrid from the sql database.
+		 * Creates Amount in $ column
+		 * Call this method anytime the dividends database has been modified
+		 */
+		private void updateDividendsTable()
+		{
+			// Select data from database
+			mDividendsTable = mDatabase.SelectData(DatabaseContract.Dividends.TABLE);
+			// Add Amount (in dollars) column - probably need a check in here if column doesn't already exist. 
+			// OR create a new method to create tables.
+			String newColumn = "Amount_$";
+			mDividendsTable.Columns.Add(new DataColumn(newColumn, typeof(float)));
+			foreach (DataRow row in mDividendsTable.Rows)
+			{
+				row.SetField(newColumn, Convert.ToSingle(row.Field<Int64>(DatabaseContract.Dividends.AMOUNT)) / 100);
+			}
+			// Use the datatable as the data source for the datagrid
+			dataGridDividends.ItemsSource = mDividendsTable.DefaultView;
+		}
+
+		/*
 		 * A bunch of statements for database testing
 		 */
 		private void testDatabase(DatabaseFunctions database)
@@ -155,6 +239,8 @@ namespace PortfolioTrackerApp
 
 			
 		}
+
+		
 
 	}
 }

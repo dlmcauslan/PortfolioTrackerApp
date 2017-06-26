@@ -72,7 +72,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddDividendPopup.xaml.cs">
+      <DependentUpon>AddDividendPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities.cs" />
+    <Page Include="AddDividendPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddPurchasePopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

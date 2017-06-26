@@ -6,6 +6,12 @@
         xmlns:local="clr-namespace:PortfolioTrackerApp"
         mc:Ignorable="d"
         Title="Portfolio Tracker" Height="500" Width="700">
+    <Window.Resources>
+        <Style x:Key="centredColumnsStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+    </Window.Resources>
     <Grid>
         <TabControl BorderThickness="0">
             <TabControl.Resources>
@@ -44,14 +50,14 @@
                         <!-- Portfolio overview table -->
                         <DataGrid ItemsSource="{Binding XPath=Expense}" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" RowHeaderWidth="0" BorderThickness="0,0,0,0">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Symbol" Binding="{Binding XPath=@ExpenseType}"/>
-                                <DataGridTextColumn Header="Name" Binding="{Binding XPath=@ExpenseAmount}"/>
-                                <DataGridTextColumn Header="Price" Binding="{Binding XPath=@ExpenseAmount}"/>
-                                <DataGridTextColumn Header="Number Owned" Binding="{Binding XPath=@ExpenseAmount}"/>
-                                <DataGridTextColumn Header="Total Spent" Binding="{Binding XPath=@ExpenseAmount}"/>
-                                <DataGridTextColumn Header="Total Dividends" Binding="{Binding XPath=@ExpenseAmount}"/>
-                                <DataGridTextColumn Header="Total Value" Binding="{Binding XPath=@ExpenseAmount}"/>
-                                <DataGridTextColumn Header="Profit %" Binding="{Binding XPath=@ExpenseAmount}"/>
+                                <DataGridTextColumn Header="Symbol" Binding="{Binding XPath=@ExpenseType}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Name" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Price" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Number Owned" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Total Spent" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Total Dividends" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Total Value" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Profit %" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -88,53 +94,48 @@
                     <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
                         <DataGrid Name="dataGridPurchases" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0" IsReadOnly="True">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding Date}" Header="Purchase Date">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="HorizontalAlignment" Value="Center" />
-                                            <Setter Property="Margin" Value="4"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                <DataGridTextColumn Binding="{Binding Stock_Code}" Header="Symbol">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="HorizontalAlignment" Value="Center" />
-                                            <Setter Property="Margin" Value="4"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                <DataGridTextColumn Binding="{Binding Price_$, StringFormat=F2}" Header="Price">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="HorizontalAlignment" Value="Center" />
-                                            <Setter Property="Margin" Value="4"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                <DataGridTextColumn Binding="{Binding Number_Purchased}" Header="Number Purchased">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="HorizontalAlignment" Value="Center" />
-                                            <Setter Property="Margin" Value="4"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                                <DataGridTextColumn Binding="{Binding Total_Cost, StringFormat=F2}" Header="Total Cost">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="HorizontalAlignment" Value="Center" />
-                                            <Setter Property="Margin" Value="4"/>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Date}" Header="Purchase Date" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Binding="{Binding Stock_Code}" Header="Stock Symbol" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Binding="{Binding Price_$, StringFormat=F2}" Header="Price" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Binding="{Binding Number_Purchased}" Header="Number Purchased" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Binding="{Binding Total_Cost, StringFormat=F2}" Header="Total Cost" ElementStyle="{StaticResource centredColumnsStyle}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="Dividends">
-                <Label Content="Dividends here..." />
+                <Grid Background="#10000000">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <!-- Grid containing purchases buttons -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <!-- Add Dividend Button-->
+                        <Button Name="AddDividendButton" Click ="AddDividendButton_Click"  Grid.Column="0" Style="{StaticResource buttonStyle}">Add Dividend</Button>
+                        <!-- Edit Dividend Button-->
+                        <Button Name="EditDividendButton" Click ="EditDividendButton_Click"  Grid.Column="1" Style="{StaticResource buttonStyle}">Edit Dividend</Button>
+                        <!-- Delete Dividend Button-->
+                        <Button Name="DeleteDividendButton" Click ="DeleteDividendButton_Click"  Grid.Column="2" Style="{StaticResource buttonStyle}">Delete</Button>
+                    </Grid>
+                    <!-- Table of dividends -->
+                    <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
+                        <DataGrid Name="dataGridDividends" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding Date}" Header="Dividend Date" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Binding="{Binding Stock_Code}" Header="Stock Symbol" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Binding="{Binding Amount_$, StringFormat=F2}" Header="Dividend Amount" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
             </TabItem>
             <TabItem Header="Value Path">
                 <Label Content="Value path goes here..." />

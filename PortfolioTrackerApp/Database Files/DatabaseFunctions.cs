@@ -86,9 +86,7 @@ namespace PortfolioTrackerApp
 		{
 			try
 			{
-				Console.WriteLine("test1");
 				mDatabaseConnection.Open();
-				Console.WriteLine("test2");
 				String commandString = "INSERT INTO " + tableName + " (" + columns
 										+ ") values (" + values + ")";
 				Console.WriteLine(commandString);
@@ -135,6 +133,7 @@ namespace PortfolioTrackerApp
 				mDatabaseConnection.Open();
 				String commandString = "UPDATE " + tableName + " SET " + setStatement + 
 										" WHERE " + condition;
+				Console.WriteLine(commandString);
 				SQLiteCommand command = new SQLiteCommand(commandString, mDatabaseConnection);
 				int updateSuccess = command.ExecuteNonQuery();
 				mDatabaseConnection.Close();
@@ -149,7 +148,6 @@ namespace PortfolioTrackerApp
 		 * Performs a SELECT operation on the given table using given query and columns
 		 * @return the SQLiteDataReader object that contains the query results
 		 */
-		// This doesn't work because need to close the database!!!!
 		public DataTable SelectData(String tableName, String columns="*", String query="")
 		{
 			mDatabaseConnection.Open();

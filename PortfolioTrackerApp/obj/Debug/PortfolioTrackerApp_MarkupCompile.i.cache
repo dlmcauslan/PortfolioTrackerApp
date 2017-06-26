@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\App.xaml
-2-1532617985
+3-1104316701
 
-131765390407
+14-1074406835
 19-415809897
-AddPurchasePopup.xaml;MainWindow.xaml;
+AddDividendPopup.xaml;AddPurchasePopup.xaml;MainWindow.xaml;
 
-True
+False
 
