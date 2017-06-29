@@ -75,7 +75,7 @@ namespace PortfolioTrackerApp
 			if (mAddEdit == WindowType.EditDividend)
 			{
 				String setStatement = DatabaseContract.Dividends.CODE + " = '" + textboxStockCode.Text.ToUpper()
-								+ ", " + DatabaseContract.Dividends.DATE + " = '" + textboxDate.Text
+								+ "', " + DatabaseContract.Dividends.DATE + " = '" + textboxDate.Text
 								+ "', " + DatabaseContract.Dividends.AMOUNT + " = " + Utilities.DollarsToCents(priceDollars);
 				String whereStatement = DatabaseContract.Dividends.ID + " = " + mRowData.Row.Field<Int64>(DatabaseContract.Dividends.ID).ToString();
 				databaseActionSuccessful = mDatabase.EditData(DatabaseContract.Dividends.TABLE, setStatement, whereStatement);
