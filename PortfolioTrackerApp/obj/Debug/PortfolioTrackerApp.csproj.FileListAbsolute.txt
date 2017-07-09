@@ -51,3 +51,10 @@ C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\o
 C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\obj\Debug\PortfolioTrackerApp.csprojResolveAssemblyReference.cache
 C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\obj\Debug\AddDividendPopup.g.cs
 C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\obj\Debug\AddDividendPopup.baml
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\Newtonsoft.Json.dll
+C:\Users\dlmca\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\Newtonsoft.Json.xml
+D:\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\Newtonsoft.Json.dll
+D:\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\bin\Debug\Newtonsoft.Json.xml
+D:\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\obj\Debug\PortfolioTrackerApp.csprojResolveAssemblyReference.cache
+D:\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\obj\Debug\AddDividendPopup.g.cs
+D:\OneDrive\C# Development\PortfolioTrackerApp\PortfolioTrackerApp\obj\Debug\AddDividendPopup.baml

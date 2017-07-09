@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortfolioTrackerApp.Properties
+namespace PortfolioTrackerApp
 {
 	class Downloader
 	{
@@ -55,39 +58,54 @@ namespace PortfolioTrackerApp.Properties
 				//mEndDate = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDate);
 			}
 
-			///**
-			// * download method. Downloads data for the stock between start and end date. Because the yahoo query language
-			// * api has a maximum number of results per query, we download 1 year worth of data at a time in a loop.
-			// * @throws IOException 
-			// */
-			//public void download()
+		/**
+		 * download method. Downloads data for the stock between start and end date. Because the yahoo query language
+		 * api has a maximum number of results per query, we download 1 year worth of data at a time in a loop.
+		 * @throws IOException 
+		 */
+		public void download()
+		{
+			// Get the range of years to loop over
+			//int minYear = Integer.parseInt(startDate.substring(0, 4));
+			//int maxYear = Integer.parseInt(endDate.substring(0, 4));
+			//String minMonthDay;
+			//String maxMonthDay;
+
+			//for (int y = minYear; y <= maxYear; y++)
 			//{
-			//	// Get the range of years to loop over
-			//	int minYear = Integer.parseInt(startDate.substring(0, 4));
-			//	int maxYear = Integer.parseInt(endDate.substring(0, 4));
-			//	String minMonthDay;
-			//	String maxMonthDay;
-        
-			//	for (int y = minYear; y <= maxYear; y++) {
-			//		// If its the first or last year, have a different start(end) date
-			//		if (y == minYear) minMonthDay = startDate.substring(4);
-			//		else minMonthDay = "-01-01";
-			//		if (y == maxYear) maxMonthDay = endDate.substring(4);
-			//		else maxMonthDay = "-12-31";
-			//		// Create the minimum and maximum date string for the query
-			//		String minDate = String.valueOf(y) + minMonthDay;
-			//		String maxDate = String.valueOf(y) + maxMonthDay;
-			//		// Create the query string and URL to download from
-			//		String query = "where%20symbol%20%3D%20%22" + stockCode + "%22%20and%20startDate%20%3D%20%22" + minDate
-			//				+ "%22%20and%20endDate%20%3D%20%22" + maxDate + "%22";
-			//		URL DL_URL = new URL(URL_BASE + query + URL_END);
-			//		System.out.println(DL_URL);
-			//		//getDataFromURL(DL_URL);
-			//		//            System.out.println(minDate);
-			//		//            System.out.println(maxDate);
-			//		System.out.println(DL_URL);
-			//	}
+				// If its the first or last year, have a different start(end) date
+				//if (y == minYear) minMonthDay = startDate.substring(4);
+				//else minMonthDay = "-01-01";
+				//if (y == maxYear) maxMonthDay = endDate.substring(4);
+				//else maxMonthDay = "-12-31";
+				//// Create the minimum and maximum date string for the query
+				//String minDate = String.valueOf(y) + minMonthDay;
+				//String maxDate = String.valueOf(y) + maxMonthDay;
+				//// Create the query string and URL to download from
+				//String query = "where%20symbol%20%3D%20%22" + stockCode + "%22%20and%20startDate%20%3D%20%22" + minDate
+				//		+ "%22%20and%20endDate%20%3D%20%22" + maxDate + "%22";
+			String historicalDataUrl = URL_BASE + mStockCode;
+			Console.WriteLine(historicalDataUrl);
+			using (WebClient downloader = new WebClient())
+			{
+				var jsonStr = downloader.DownloadString(historicalDataUrl);
+				//JObject stockData = (JObject)JsonConvert.DeserializeObject(jsonStr);
+				JObject stockData = JObject.Parse(jsonStr);
+				//JObject data = (JObject)stockData["Time Series (Daily)"];
+
+				foreach (var jItem in (JObject)stockData["Time Series (Daily)"])
+				{
+					Console.WriteLine(jItem.Key);
+					Console.WriteLine(Utilities.DollarsToCents((float)jItem.Value["4. close"]));
+				}
+			}
+				//dowloader.OpenReadCompleted += new OpenReadCompletedEventHandler(downloader_OpenReadCompleted);
+
+			//getDataFromURL(DL_URL);
+				//            System.out.println(minDate);
+				//            System.out.println(maxDate);
 			//}
+		}
 
 		//    /**
 		//     * Gets stock data from the URL supplied. Downloads json file and parses it to get date

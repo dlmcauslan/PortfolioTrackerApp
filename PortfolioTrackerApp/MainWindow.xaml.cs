@@ -45,6 +45,10 @@ namespace PortfolioTrackerApp
 			// Populate tables from database
 			updatePurchaseTable();
 			updateDividendsTable();
+
+			// Uncomment to test downloading.
+			Downloader mDownloader = new Downloader(mDatabase, "VAS.AX");
+			mDownloader.download();
 		}
 
 		/*********************************
