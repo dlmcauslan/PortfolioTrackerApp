@@ -152,6 +152,7 @@ namespace PortfolioTrackerApp
 		{
 			mDatabaseConnection.Open();
 			String commandString = "SELECT " + columns + " FROM " + tableName + " " + query;
+			Console.WriteLine(commandString);
 			SQLiteDataAdapter dataAdapter  = new SQLiteDataAdapter(commandString, mDatabaseConnection);
 			DataTable data = new DataTable();
 			dataAdapter.Fill(data);

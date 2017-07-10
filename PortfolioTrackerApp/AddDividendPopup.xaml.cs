@@ -39,7 +39,7 @@ namespace PortfolioTrackerApp
 			if (mAddEdit == WindowType.EditDividend)
 			{
 				textboxStockCode.Text = mRowData.Row.Field<String>(DatabaseContract.Dividends.CODE);
-				textboxDate.Text = mRowData.Row.Field<String>(DatabaseContract.Dividends.DATE);
+				textboxDate.Text = Utilities.convertDate(mRowData.Row.Field<String>(DatabaseContract.Dividends.DATE));
 				textboxAmount.Text = mRowData.Row.Field<float>("Amount_$").ToString();
 			}
 		}
@@ -75,14 +75,14 @@ namespace PortfolioTrackerApp
 			if (mAddEdit == WindowType.EditDividend)
 			{
 				String setStatement = DatabaseContract.Dividends.CODE + " = '" + textboxStockCode.Text.ToUpper()
-								+ "', " + DatabaseContract.Dividends.DATE + " = '" + textboxDate.Text
+								+ "', " + DatabaseContract.Dividends.DATE + " = '" + Utilities.convertDateReverse(textboxDate.Text)
 								+ "', " + DatabaseContract.Dividends.AMOUNT + " = " + Utilities.DollarsToCents(priceDollars);
 				String whereStatement = DatabaseContract.Dividends.ID + " = " + mRowData.Row.Field<Int64>(DatabaseContract.Dividends.ID).ToString();
 				databaseActionSuccessful = mDatabase.EditData(DatabaseContract.Dividends.TABLE, setStatement, whereStatement);
 			}
 			else
 			{
-				String dividendsValues = String.Format("'{0}', '{1}', {2}", textboxStockCode.Text.ToUpper(), textboxDate.Text, Utilities.DollarsToCents(priceDollars));
+				String dividendsValues = String.Format("'{0}', '{1}', {2}", textboxStockCode.Text.ToUpper(), Utilities.convertDateReverse(textboxDate.Text), Utilities.DollarsToCents(priceDollars));
 				databaseActionSuccessful = mDatabase.InsertData(DatabaseContract.Dividends.TABLE, DatabaseContract.Dividends.COLUMNS, dividendsValues);
 			}
 			// If all is succesful close the dialog

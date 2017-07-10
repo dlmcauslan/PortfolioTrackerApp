@@ -35,6 +35,7 @@ namespace PortfolioTrackerApp
 			mDatabase = new DatabaseFunctions(DatabaseContract.PATH);
 			// Create tables
 			//mDatabase.DropTable(DatabaseContract.Purchases.TABLE);
+			//mDatabase.DropTable(DatabaseContract.Dividends.TABLE);
 			mDatabase.CreateTable(DatabaseContract.Purchases.CREATE_TABLE);
 			mDatabase.CreateTable(DatabaseContract.Dividends.CREATE_TABLE);
 			mDatabase.CreateTable(DatabaseContract.Historical.CREATE_TABLE);
@@ -47,7 +48,7 @@ namespace PortfolioTrackerApp
 			updateDividendsTable();
 
 			// Uncomment to test downloading.
-			Downloader mDownloader = new Downloader(mDatabase, "VAS.AX");
+			Downloader mDownloader = new Downloader(mDatabase, "IJR.AX");
 			mDownloader.download();
 		}
 

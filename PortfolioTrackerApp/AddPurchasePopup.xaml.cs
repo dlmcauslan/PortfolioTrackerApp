@@ -41,7 +41,7 @@ namespace PortfolioTrackerApp
 			{
 				textboxStockCode.Text =mRowData.Row.Field<String>(DatabaseContract.Purchases.CODE);
 				textboxNumberPurchased.Text = mRowData.Row.Field<Int64>(DatabaseContract.Purchases.NUMBER).ToString();
-				textboxDate.Text = mRowData.Row.Field<String>(DatabaseContract.Purchases.DATE);
+				textboxDate.Text = Utilities.convertDate(mRowData.Row.Field<String>(DatabaseContract.Purchases.DATE));
 				textboxPrice.Text = mRowData.Row.Field<float>("Price_$").ToString();
 
 			}
@@ -96,14 +96,14 @@ namespace PortfolioTrackerApp
 			{
 				String setStatement = DatabaseContract.Purchases.CODE + " = '" + textboxStockCode.Text.ToUpper()
 								+ "', " + DatabaseContract.Purchases.NUMBER + " = " + numberPurchasedInt
-								+ ", " + DatabaseContract.Purchases.DATE + " = '" + textboxDate.Text
+								+ ", " + DatabaseContract.Purchases.DATE + " = '" + Utilities.convertDateReverse(textboxDate.Text)
 								+ "', " + DatabaseContract.Purchases.PRICE + " = " + Utilities.DollarsToCents(priceDollars);
 				String whereStatement = DatabaseContract.Purchases.ID + " = " + mRowData.Row.Field<Int64>(DatabaseContract.Purchases.ID).ToString();
 				databaseActionSuccessful = mDatabase.EditData(DatabaseContract.Purchases.TABLE, setStatement, whereStatement);
 			}
 			else
 			{
-				String purchasesValues = String.Format("'{0}', '{1}', {2}, {3}", textboxStockCode.Text.ToUpper(), textboxDate.Text, numberPurchasedInt, Utilities.DollarsToCents(priceDollars));
+				String purchasesValues = String.Format("'{0}', '{1}', {2}, {3}", textboxStockCode.Text.ToUpper(), Utilities.convertDateReverse(textboxDate.Text), numberPurchasedInt, Utilities.DollarsToCents(priceDollars));
 				databaseActionSuccessful = mDatabase.InsertData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.COLUMNS, purchasesValues);
 			}
 			// If all is succesful close the dialog

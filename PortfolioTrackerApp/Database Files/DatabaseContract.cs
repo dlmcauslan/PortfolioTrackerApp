@@ -34,7 +34,7 @@ namespace PortfolioTrackerApp
 			public const String ID = "_ID";
 			public const String CODE = "Stock_Code";
 			public const String NUMBER = "Number_Purchased";
-			public const String DATE = "Date"; // text in form dd/mm/yyyy
+			public const String DATE = "Date"; // text in form yyyy-dd-mm
 			public const String PRICE = "Price"; // integer in cents
 			public const String COLUMNS = CODE + ", " + DATE + ", " + NUMBER + ", " + PRICE;
 
@@ -58,7 +58,7 @@ namespace PortfolioTrackerApp
 			// Columns
 			public const String ID = "_ID";
 			public const String CODE = "Stock_Code";
-			public const String DATE = "Date";		// In the format dd/mm/yyyy
+			public const String DATE = "Date";		// In the format yyyy-mm-dd
 			public const String AMOUNT = "Dividend_Amount";     // In cents
 			public const String COLUMNS = CODE + ", " + DATE + ", " + AMOUNT;
 
@@ -81,7 +81,7 @@ namespace PortfolioTrackerApp
 			// Columns
 			public const String PK = TABLE + "_PK";
 			public const String CODE = "Stock_Code";
-			public const String DATE = "Date";		// in the format dd/mm/yyyy
+			public const String DATE = "Date";		// in the format yyyy-mm-dd
 			public const String PRICE = "Price";    // in cents
 			public const String COLUMNS = CODE + ", " + DATE + ", " + PRICE;
 
