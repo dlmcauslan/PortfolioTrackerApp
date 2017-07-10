@@ -66,9 +66,17 @@ namespace PortfolioTrackerApp
 				return;
 			}
 
-			// TODO
 			// Check that stock is in historical database, if it isn't download the historical
 			// data for that stock
+			String stockSymbol = textboxStockCode.Text.ToUpper();
+			String query = String.Format("WHERE {0} = '{1}'", DatabaseContract.Historical.CODE, stockSymbol);
+			DataTable queryResult = mDatabase.SelectData(DatabaseContract.Historical.TABLE, "*", query);
+			if (queryResult.Rows.Count == 0)
+			{
+				Downloader mDownloader = new Downloader(mDatabase, stockSymbol);
+				mDownloader.download();
+			}
+
 
 			// Add the data to the Dividends database
 			int databaseActionSuccessful = 0;

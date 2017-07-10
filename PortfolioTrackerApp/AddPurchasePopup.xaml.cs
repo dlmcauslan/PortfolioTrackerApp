@@ -84,9 +84,17 @@ namespace PortfolioTrackerApp
 				return;
 			}
 
-			// TODO
 			// Check that stock is in historical database, if it isn't download the historical
 			// data for that stock
+			String stockSymbol = textboxStockCode.Text.ToUpper();
+			String query = String.Format("WHERE {0} = '{1}'", DatabaseContract.Historical.CODE, stockSymbol);
+			Console.WriteLine(query);
+			DataTable queryResult = mDatabase.SelectData(DatabaseContract.Historical.TABLE, "*", query);
+			if(queryResult.Rows.Count == 0)
+			{
+				Downloader mDownloader = new Downloader(mDatabase, stockSymbol);
+				mDownloader.download();
+			}
 
 			// Add the data to the Purchases database
 			if (mBuySellEdit.Equals(WindowType.Sales)) numberPurchasedInt = -numberPurchasedInt; // If its a sale, negate the number (sold) when adding to the database.
@@ -94,7 +102,7 @@ namespace PortfolioTrackerApp
 			int databaseActionSuccessful = 0;
 			if (mBuySellEdit == WindowType.EditPurchase)
 			{
-				String setStatement = DatabaseContract.Purchases.CODE + " = '" + textboxStockCode.Text.ToUpper()
+				String setStatement = DatabaseContract.Purchases.CODE + " = '" + stockSymbol
 								+ "', " + DatabaseContract.Purchases.NUMBER + " = " + numberPurchasedInt
 								+ ", " + DatabaseContract.Purchases.DATE + " = '" + Utilities.convertDateReverse(textboxDate.Text)
 								+ "', " + DatabaseContract.Purchases.PRICE + " = " + Utilities.DollarsToCents(priceDollars);
@@ -103,7 +111,7 @@ namespace PortfolioTrackerApp
 			}
 			else
 			{
-				String purchasesValues = String.Format("'{0}', '{1}', {2}, {3}", textboxStockCode.Text.ToUpper(), Utilities.convertDateReverse(textboxDate.Text), numberPurchasedInt, Utilities.DollarsToCents(priceDollars));
+				String purchasesValues = String.Format("'{0}', '{1}', {2}, {3}", stockSymbol, Utilities.convertDateReverse(textboxDate.Text), numberPurchasedInt, Utilities.DollarsToCents(priceDollars));
 				databaseActionSuccessful = mDatabase.InsertData(DatabaseContract.Purchases.TABLE, DatabaseContract.Purchases.COLUMNS, purchasesValues);
 			}
 			// If all is succesful close the dialog

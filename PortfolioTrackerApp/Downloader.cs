@@ -31,7 +31,13 @@ namespace PortfolioTrackerApp
 			//String query = String.Format("WHERE {0} = '{1}'", DatabaseContract.Historical.CODE, mStockCode);
 			Console.WriteLine(query);
 			DataTable queryResult = mDatabase.SelectData(DatabaseContract.Historical.TABLE, DatabaseContract.Historical.DATE, query);
-			mStartDate = queryResult.Rows[0][DatabaseContract.Historical.DATE].ToString();
+			if (queryResult.Rows.Count > 0)
+			{
+				mStartDate = queryResult.Rows[0][DatabaseContract.Historical.DATE].ToString();
+			} else
+			{
+				mStartDate = "1800-01-01";
+			}
 			Console.WriteLine(mStartDate);
 		}
 
