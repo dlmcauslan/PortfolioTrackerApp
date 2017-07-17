@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PortfolioTrackerApp"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="Portfolio Tracker" Height="500" Width="700">
     <Window.Resources>
@@ -43,7 +44,6 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-
                     <Label Margin="10,10,10,10" Grid.Row="0" HorizontalAlignment="Center" Content="Home page - Portfolio graph goes here." Grid.ColumnSpan="2"/>
 
                     <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
@@ -64,7 +64,15 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Charts">
-                <Label Content="Charts here..." />
+                <lvc:CartesianChart Margin="5">
+                    <lvc:CartesianChart.Series>
+                        <lvc:LineSeries Title="Series A" Values="{Binding ValuesA}" PointGeometry=""/>
+                        <!--<lvc:LineSeries Title="Series B" Values="{Binding ValuesB}" />-->
+                    </lvc:CartesianChart.Series>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Date" LabelFormatter="{Binding Formatter}" />
+                    </lvc:CartesianChart.AxisX>
+                </lvc:CartesianChart>
             </TabItem>
             <TabItem Header="Purchases" FontSize="18">
                 <Grid Background="#10000000">

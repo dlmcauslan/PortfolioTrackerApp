@@ -1,4 +1,7 @@
-﻿using System;
+﻿using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -47,10 +50,57 @@ namespace PortfolioTrackerApp
 			updatePurchaseTable();
 			updateDividendsTable();
 
+			// On opening the program get distinct stock-codes from purchases
+			// database and update the historical data for each of them. Maybe even 
+			// query the historical database to see what the most recent date is, to
+			// avoid doing this check multiple times per day.
+
 			// Uncomment to test downloading.
-			Downloader mDownloader = new Downloader(mDatabase, "IJR.AX");
-			mDownloader.download();
+			//Downloader mDownloader = new Downloader(mDatabase, "IJR.AX");
+			//mDownloader.download();
+
+			// Testing charts
+			String query = String.Format("WHERE {0} = '{1}' ORDER BY {2} DESC", DatabaseContract.Historical.CODE, "IJR.AX", DatabaseContract.Historical.DATE);
+			String columns = String.Format("{0}, {1}", DatabaseContract.Historical.DATE, DatabaseContract.Historical.PRICE);
+			DataTable testTable = mDatabase.SelectData(DatabaseContract.Historical.TABLE, columns, query);
+
+			//ValuesA = new ChartValues<ObservablePoint>();
+			//ValuesB = new ChartValues<ObservablePoint>();
+			ValuesA = new ChartValues<DateTimePoint>();
+			//DateTime today = DateTime.Today;
+			//Labels = new string[5];
+			//for (int i = 0; i < 20; i++)
+			//{
+			//	ValuesA.Add(new DateTimePoint(Utilities.toDateTime((string)testTable.Rows[i][DatabaseContract.Historical.DATE]),
+			//		Convert.ToSingle(testTable.Rows[i].Field<Int64>(DatabaseContract.Purchases.PRICE)) / 100);
+			//	//Labels[i] = today.AddDays(i).ToShortDateString();
+			//	//ValuesA.Add(new ObservablePoint(i, i*i));
+			//	//ValuesB.Add(new ObservablePoint(i, -i * i + 250));
+
+			//}
+			//foreach (DataRow row in testTable.Rows[])
+			for (int i = 0; i<200; i++)
+			{
+				var row = testTable.Rows[i];
+				DateTime date = Utilities.toDateTime(row.Field<String>(DatabaseContract.Historical.DATE));
+				double price = Convert.ToSingle(row.Field<Int64>(DatabaseContract.Historical.PRICE)) / 100;
+				if (price > 0)
+				{
+					ValuesA.Add(new DateTimePoint(date, price));
+				}
+			}
+			Formatter = value => new System.DateTime((long)(value)).ToString("d");
+			//Formatter = value => value.ToString("d");
+			//Labels = new[] { "Jan", "Feb", "Mar", "Apr", "May" };
+			DataContext = this;
 		}
+
+		public SeriesCollection SeriesCollection { get; set; }
+		public ChartValues<DateTimePoint> ValuesA { get; set; }
+		public Func<double, string> Formatter { get; set; }
+		public string[] Labels { get; set; }
+		//public ChartValues<ObservablePoint> ValuesA { get; set; }
+		//public ChartValues<ObservablePoint> ValuesB { get; set; }
 
 		/*********************************
 		 * Purchases tab methods

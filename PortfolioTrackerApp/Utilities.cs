@@ -90,7 +90,20 @@ namespace PortfolioTrackerApp
 			if (dateInt1[0] == dateInt2[0] && dateInt1[1] == dateInt2[1] && dateInt1[2] > dateInt2[2]) return 1;
 			return -1;
 		}
+
+		/* Takes as an input a date string in the format given by
+		* alphavantage.co (yyyy-mm-dd) and the database and converts it to a string
+		* of the format dd/mm/yyy
+		*/
+		public static DateTime toDateTime(String date)
+		{
+			// Splits the string into [yyyy mm dd]
+			String[] dateArray = date.Split('-');
+			return new DateTime(int.Parse(dateArray[0]), int.Parse(dateArray[1]), int.Parse(dateArray[2]));
+		}
+
 	}
 
 	
+
 }

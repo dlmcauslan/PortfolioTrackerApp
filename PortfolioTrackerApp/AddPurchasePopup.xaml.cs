@@ -88,7 +88,6 @@ namespace PortfolioTrackerApp
 			// data for that stock
 			String stockSymbol = textboxStockCode.Text.ToUpper();
 			String query = String.Format("WHERE {0} = '{1}'", DatabaseContract.Historical.CODE, stockSymbol);
-			Console.WriteLine(query);
 			DataTable queryResult = mDatabase.SelectData(DatabaseContract.Historical.TABLE, "*", query);
 			if(queryResult.Rows.Count == 0)
 			{
