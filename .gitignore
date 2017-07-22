@@ -17,3 +17,12 @@ packages/LiveCharts.Wpf.0.9.7/lib/net40/LiveCharts.Wpf.XML
 PortfolioTrackerApp/bin/Debug/LiveCharts.Wpf.xml
 PortfolioTrackerApp/obj/Debug/PortfolioTrackerApp.exe
 *.exe
+*.baml
+PortfolioTrackerApp/bin/Release/LiveCharts.Wpf.xml
+*.db
+PortfolioTrackerApp/obj/Release/AddDividendPopup.g.cs
+PortfolioTrackerApp/bin/Release/LiveCharts.xml
+PortfolioTrackerApp/obj/Release/AddPurchasePopup.g.i.cs
+PortfolioTrackerApp/obj/Release/AddPurchasePopup.g.cs
+PortfolioTrackerApp/obj/Release/AddDividendPopup.g.i.cs
+PortfolioTrackerApp/bin/Release/Newtonsoft.Json.xml
