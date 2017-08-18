@@ -39,7 +39,7 @@
         
             <!-- Stock Price ($)-->
             <Label Grid.Column="3" Grid.Row="0" HorizontalContentAlignment="Center">Price ($)</Label>
-            <TextBox Name="textboxPrice" Grid.Column="3" Grid.Row="1" MinWidth="80" HorizontalContentAlignment="Center" Margin="5,0,5,0">0.00</TextBox>
+            <TextBox Name="textboxPrice" Grid.Column="3" Grid.Row="1" MinWidth="80" HorizontalContentAlignment="Center" Margin="5,0,5,0" >0.00</TextBox>
 
         </Grid>
 

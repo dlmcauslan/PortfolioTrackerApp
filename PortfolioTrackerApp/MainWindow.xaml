@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PortfolioTrackerApp"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="Portfolio Tracker" Height="500" Width="700">
+        Title="Portfolio Tracker" Height="750" Width="900">
     <Window.Resources>
         <Style x:Key="centredColumnsStyle" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center" />
@@ -55,8 +55,10 @@
                                 <DataGridTextColumn Header="Price" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
                                 <DataGridTextColumn Header="Number Owned" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
                                 <DataGridTextColumn Header="Total Spent" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Total Stock Value" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
                                 <DataGridTextColumn Header="Total Dividends" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
                                 <DataGridTextColumn Header="Total Value" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Profit $" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
                                 <DataGridTextColumn Header="Profit %" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
                             </DataGrid.Columns>
                         </DataGrid>

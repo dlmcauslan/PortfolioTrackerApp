@@ -46,6 +46,45 @@ namespace PortfolioTrackerApp
 			// Uncomment to add some test data to the database
 			//testDatabase(mDatabase);
 
+
+			/** Here's what we want to do on startup */
+
+			// From the purchases table, select distinct stock codes, put into an array of some sort
+			String stockCodeColumn = String.Format("DISTINCT {0}", DatabaseContract.Purchases.CODE);
+			List <string> stockCodes = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, stockCodeColumn).AsEnumerable().Select(x => x[0].ToString()).ToList();
+
+			// Create a dataTable for main data.
+			string[] mainTableColumns = new string[10] { "stockCode", "stockName", "price", "numberOwned", "spent", "stockValue", "dividendValue", "totalValue", "profit_$", "profit_%" };
+			DataTable mainDataTable = new DataTable();
+			foreach (string column in mainTableColumns) mainDataTable.Columns.Add(column, typeof(string));
+
+			// Create a total "stock" which will hold the totals of totalSpent, totalDividend, totalStockValue, totalValue, profit% and profit$.
+
+			// Loop over the different stock codes, creating a stock object for each one. Stock will have a code, name, currentPrice, totalNumberOwned, totalDividendValue, totalSpent. 
+			// It will have methods to get currentPrice, totalNumberOwned, totalDividendValue, totalSpent, totalStockValue, totalOverallValue, profit%, and profit$.
+			foreach (string stockCode in stockCodes)
+			{
+				Console.WriteLine(stockCode);
+				// Update the historical data for this stock
+
+				// Create a stock object and add it to the main datatable
+				Stock stock = new Stock(stockCode, mDatabase);
+				//mainDataTable.Rows.Add(stock.getCode(), 
+				//	stock.getName(), 
+				//	stock.getCurrentPrice(), 
+				//	stock.getTotalNumberOwned(), 
+				//	stock.getProfitDollar(), 
+				//	stock.getProfitPercent(),
+				//	stock.getTotalDividend(),
+				//	stock.getTotalSpent(),
+				//	stock.getTotalStockValue(),
+				//	stock.getTotalOverallValue());
+			}
+
+			// It will add these to a data table that can be used to populate the main table.
+
+			// From main data table populate the main table.
+
 			// Populate tables from database
 			updatePurchaseTable();
 			updateDividendsTable();
