@@ -48,7 +48,7 @@
 
                     <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
                         <!-- Portfolio overview table -->
-                        <DataGrid Name="dataGridMainTable" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0" IsReadOnly="True">
+                        <DataGrid Name="dataGridMainTable" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0" IsReadOnly="True" CanUserSortColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Symbol" Binding="{Binding stockCode}" ElementStyle="{StaticResource centredColumnsStyle}"/>
                                 <DataGridTextColumn Header="Name" Binding="{Binding stockName}" ElementStyle="{StaticResource centredColumnsStyle}"/>

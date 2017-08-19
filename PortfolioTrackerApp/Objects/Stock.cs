@@ -13,10 +13,10 @@ namespace PortfolioTrackerApp
 		private readonly string mCode;
 		private readonly string mName;
 		private DatabaseFunctions mDatabase;
-		private double mCurrentPrice;
+		private float mCurrentPrice;
 		private int mTotalNumberOwned;
-		private double mTotalDividendValue;
-		private double mTotalSpent;
+		private float mTotalDividendValue;
+		private float mTotalSpent;
 
 		public Stock(string code, DatabaseFunctions database)
 		{
@@ -106,7 +106,7 @@ namespace PortfolioTrackerApp
 		/* 
 		 * Gets stocks current price
 		 */
-		public double getCurrentPrice()
+		public float getCurrentPrice()
 		{
 			return mCurrentPrice;
 		}
@@ -122,7 +122,7 @@ namespace PortfolioTrackerApp
 		/* 
 		 * Gets the total dividends received for this stock
 		 */
-		public double getTotalDividend()
+		public float getTotalDividend()
 		{
 			return mTotalDividendValue;
 		}
@@ -130,7 +130,7 @@ namespace PortfolioTrackerApp
 		/* 
 		 * Gets the total spent buying this stock
 		 */
-		public double getTotalSpent()
+		public float getTotalSpent()
 		{
 			return mTotalSpent;
 		}
@@ -138,7 +138,7 @@ namespace PortfolioTrackerApp
 		/* 
 		 * Gets the current value of this stock
 		 */
-		public double getTotalStockValue()
+		public float getTotalStockValue()
 		{
 			return getTotalNumberOwned() * getCurrentPrice();
 		}
@@ -146,7 +146,7 @@ namespace PortfolioTrackerApp
 		/* 
 		 * Gets the combined stock value and dividends recieved
 		 */
-		public double getTotalOverallValue()
+		public float getTotalOverallValue()
 		{
 			return getTotalStockValue() + getTotalDividend();
 		}
@@ -154,7 +154,7 @@ namespace PortfolioTrackerApp
 		/* 
 		 * Gets the current profit in $
 		 */
-		public double getProfitDollar()
+		public float getProfitDollar()
 		{
 			return getTotalOverallValue() - getTotalSpent();
 		}
@@ -162,7 +162,7 @@ namespace PortfolioTrackerApp
 		/* 
 		 * Gets the current profit as %
 		 */
-		public double getProfitPercent()
+		public float getProfitPercent()
 		{
 			return getProfitDollar()/getTotalSpent() * 100;
 		}

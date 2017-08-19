@@ -48,15 +48,11 @@ namespace PortfolioTrackerApp
 
 
 			/** Here's what we want to do on startup */
-
 			// From the purchases table, select distinct stock codes, put into an array of some sort
 			String stockCodeColumn = String.Format("DISTINCT {0}", DatabaseContract.Purchases.CODE);
 			List <string> stockCodes = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, stockCodeColumn).AsEnumerable().Select(x => x[0].ToString()).ToList();
 
 			// Create a dataTable for main data.
-			//string[] mainTableColumns = new string[10] { "stockCode", "stockName", "price", "numberOwned", "spent", "stockValue", "dividendValue", "totalValue", "profit_$", "profit_%" };
-			//DataTable mainDataTable = new DataTable();
-			//foreach (string column in mainTableColumns) mainDataTable.Columns.Add(column, typeof(string));
 			DataTable mainDataTable = new DataTable
 			{
 				Columns = {
@@ -74,13 +70,22 @@ namespace PortfolioTrackerApp
 			};
 
 			// Create a total "stock" which will hold the totals of totalSpent, totalDividend, totalStockValue, totalValue, profit% and profit$.
+			float spentSum = 0;
+			float dividendSum = 0;
+			float stockValueSum = 0;			
 
 			// Loop over the different stock codes, creating a stock object for each one. Stock will have a code, name, currentPrice, totalNumberOwned, totalDividendValue, totalSpent. 
 			// It will have methods to get currentPrice, totalNumberOwned, totalDividendValue, totalSpent, totalStockValue, totalOverallValue, profit%, and profit$.
 			foreach (string stockCode in stockCodes)
 			{
 				Console.WriteLine(stockCode);
-				// Update the historical data for this stock
+				// On opening the program get distinct stock-codes from purchases
+				// database and update the historical data for each of them. Maybe even 
+				// query the historical database to see what the most recent date is, to
+				// avoid doing this check multiple times per day.
+				// NEED loading screen probably
+				Downloader mDownloader = new Downloader(mDatabase, stockCode);
+				mDownloader.download();
 
 				// Create a stock object and add it to the main datatable
 				Stock stock = new Stock(stockCode, mDatabase);
@@ -93,10 +98,17 @@ namespace PortfolioTrackerApp
 					stock.getTotalDividend(),
 					stock.getTotalOverallValue(),
 					stock.getProfitDollar(),
-					stock.getProfitPercent());		
+					stock.getProfitPercent());
+				// Calculate the overall sums
+				spentSum += stock.getTotalSpent();
+				dividendSum += stock.getTotalDividend();
+				stockValueSum += stock.getTotalStockValue();
 			}
 
-			// It will add these to a data table that can be used to populate the main table.
+			// Add a summary row
+			float totalSum = stockValueSum + dividendSum;
+			float profit = totalSum - spentSum;
+			mainDataTable.Rows.Add("Summary", null, null, null, spentSum, stockValueSum, dividendSum, totalSum, profit, profit/spentSum*100);
 
 			// From main data table populate the main table.
 			dataGridMainTable.ItemsSource = mainDataTable.DefaultView;
@@ -105,14 +117,7 @@ namespace PortfolioTrackerApp
 			updatePurchaseTable();
 			updateDividendsTable();
 
-			// On opening the program get distinct stock-codes from purchases
-			// database and update the historical data for each of them. Maybe even 
-			// query the historical database to see what the most recent date is, to
-			// avoid doing this check multiple times per day.
-
-			// Uncomment to test downloading.
-			//Downloader mDownloader = new Downloader(mDatabase, "IJR.AX");
-			//mDownloader.download();
+			
 
 			// Testing charts
 			String query = String.Format("WHERE {0} = '{1}' ORDER BY {2} DESC", DatabaseContract.Historical.CODE, "IJR.AX", DatabaseContract.Historical.DATE);
