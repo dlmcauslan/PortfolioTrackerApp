@@ -84,6 +84,7 @@
     <Compile Include="AddDividendPopup.xaml.cs">
       <DependentUpon>AddDividendPopup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Objects\Stock.cs" />
     <Compile Include="Downloader.cs" />
     <Compile Include="Utilities.cs" />
     <Page Include="AddDividendPopup.xaml">

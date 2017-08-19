@@ -41,7 +41,7 @@ namespace PortfolioTrackerApp
 			String query = String.Format("WHERE {0} = '{1}' ORDER BY {2} DESC LIMIT 1 ", DatabaseContract.Historical.CODE, mCode, DatabaseContract.Historical.DATE);
 			String selectStatement = String.Format("{0}, {1}", DatabaseContract.Historical.DATE, DatabaseContract.Historical.PRICE);
 			DataTable queryResult = mDatabase.SelectData(DatabaseContract.Historical.TABLE, selectStatement, query);
-			mCurrentPrice = queryResult.Rows[0].Field<double>(DatabaseContract.Historical.PRICE);
+			mCurrentPrice = Convert.ToSingle(queryResult.Rows[0].Field<Int64>(DatabaseContract.Historical.PRICE))/100;
 		}
 
 		/*
@@ -53,7 +53,7 @@ namespace PortfolioTrackerApp
 			String query = String.Format("WHERE {0} = '{1}'", DatabaseContract.Purchases.CODE, mCode);
 			String selectStatement = String.Format("SUM({0}) AS TotalOwned", DatabaseContract.Purchases.NUMBER);
 			DataTable queryResult = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, selectStatement, query);
-			mTotalNumberOwned = queryResult.Rows[0].Field<int>("TotalOwned");
+			mTotalNumberOwned = (int)queryResult.Rows[0].Field<Int64>("TotalOwned");
 		}
 
 		/*
@@ -65,7 +65,7 @@ namespace PortfolioTrackerApp
 			String query = String.Format("WHERE {0} = '{1}'", DatabaseContract.Dividends.CODE, mCode);
 			String selectStatement = String.Format("SUM({0}) AS TotalDividend", DatabaseContract.Dividends.AMOUNT);
 			DataTable queryResult = mDatabase.SelectData(DatabaseContract.Dividends.TABLE, selectStatement, query);
-			mTotalDividendValue = queryResult.Rows[0].Field<double>("TotalDividend");
+			mTotalDividendValue = Convert.ToSingle(queryResult.Rows[0].Field<Int64?>("TotalDividend"))/100;
 		}
 
 		/*
@@ -75,9 +75,15 @@ namespace PortfolioTrackerApp
 		{
 			// Gets the sum of the number of shares bought from the purchases table
 			String query = String.Format("WHERE {0} = '{1}'", DatabaseContract.Purchases.CODE, mCode);
-			String selectStatement = String.Format("SUM({0}) AS TotalSpent, SUM({1}) AS TotalOwned", DatabaseContract.Purchases.PRICE, DatabaseContract.Purchases.NUMBER);
+			//String selectStatement = String.Format("SUM({0}) AS TotalSpent, SUM({1}) AS TotalOwned", DatabaseContract.Purchases.PRICE, DatabaseContract.Purchases.NUMBER);
+			String selectStatement = String.Format("{0}, {1}", DatabaseContract.Purchases.PRICE, DatabaseContract.Purchases.NUMBER);
 			DataTable queryResult = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, selectStatement, query);
-			mTotalSpent = queryResult.Rows[0].Field<int>("TotalOwned") * queryResult.Rows[0].Field<double>("TotalSpent");
+			// Loop over each row in the query result calculating the purchase cost and summing it to mTotalSpent
+			mTotalSpent = 0;
+			foreach(DataRow row in queryResult.Rows)
+			{
+				mTotalSpent+= Convert.ToSingle(row.Field<Int64>(DatabaseContract.Purchases.PRICE) * row.Field<Int64>(DatabaseContract.Purchases.NUMBER))/ 100;
+			}
 		}
 
 

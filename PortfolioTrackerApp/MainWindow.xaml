@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PortfolioTrackerApp"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="Portfolio Tracker" Height="750" Width="900">
+        Title="Portfolio Tracker" Height="750" Width="auto">
     <Window.Resources>
         <Style x:Key="centredColumnsStyle" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center" />
@@ -48,18 +48,18 @@
 
                     <Grid Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.ColumnSpan="2">
                         <!-- Portfolio overview table -->
-                        <DataGrid ItemsSource="{Binding XPath=Expense}" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" RowHeaderWidth="0" BorderThickness="0,0,0,0">
+                        <DataGrid Name="dataGridMainTable" ColumnHeaderStyle="{StaticResource columnHeaderStyle}" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" RowHeaderWidth="0" BorderThickness="0,0,0,0" IsReadOnly="True">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Symbol" Binding="{Binding XPath=@ExpenseType}" ElementStyle="{StaticResource centredColumnsStyle}"/>
-                                <DataGridTextColumn Header="Name" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
-                                <DataGridTextColumn Header="Price" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
-                                <DataGridTextColumn Header="Number Owned" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
-                                <DataGridTextColumn Header="Total Spent" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
-                                <DataGridTextColumn Header="Total Stock Value" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
-                                <DataGridTextColumn Header="Total Dividends" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
-                                <DataGridTextColumn Header="Total Value" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
-                                <DataGridTextColumn Header="Profit $" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
-                                <DataGridTextColumn Header="Profit %" Binding="{Binding XPath=@ExpenseAmount}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Symbol" Binding="{Binding stockCode}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Name" Binding="{Binding stockName}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Price" Binding="{Binding price, StringFormat=F2}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Number Owned" Binding="{Binding numberOwned}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Total Spent" Binding="{Binding spent, StringFormat=F2}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Total Stock Value" Binding="{Binding stockValue, StringFormat=F2}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Total Dividends" Binding="{Binding dividendValue, StringFormat=F2}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Total Value" Binding="{Binding totalValue, StringFormat=F2}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Profit $" Binding="{Binding profit_$, StringFormat=F2}" ElementStyle="{StaticResource centredColumnsStyle}"/>
+                                <DataGridTextColumn Header="Profit %" Binding="{Binding profit_%, StringFormat=F2}" ElementStyle="{StaticResource centredColumnsStyle}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>

@@ -26,3 +26,12 @@ PortfolioTrackerApp/obj/Release/AddPurchasePopup.g.i.cs
 PortfolioTrackerApp/obj/Release/AddPurchasePopup.g.cs
 PortfolioTrackerApp/obj/Release/AddDividendPopup.g.i.cs
 PortfolioTrackerApp/bin/Release/Newtonsoft.Json.xml
+*.csproj
+*.sqlite
+*.exe
+*.pdb
+*.g.cs
+*.i.cs
+*.txt
+*.sqlite
+*.resources

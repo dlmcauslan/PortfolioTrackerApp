@@ -54,9 +54,24 @@ namespace PortfolioTrackerApp
 			List <string> stockCodes = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, stockCodeColumn).AsEnumerable().Select(x => x[0].ToString()).ToList();
 
 			// Create a dataTable for main data.
-			string[] mainTableColumns = new string[10] { "stockCode", "stockName", "price", "numberOwned", "spent", "stockValue", "dividendValue", "totalValue", "profit_$", "profit_%" };
-			DataTable mainDataTable = new DataTable();
-			foreach (string column in mainTableColumns) mainDataTable.Columns.Add(column, typeof(string));
+			//string[] mainTableColumns = new string[10] { "stockCode", "stockName", "price", "numberOwned", "spent", "stockValue", "dividendValue", "totalValue", "profit_$", "profit_%" };
+			//DataTable mainDataTable = new DataTable();
+			//foreach (string column in mainTableColumns) mainDataTable.Columns.Add(column, typeof(string));
+			DataTable mainDataTable = new DataTable
+			{
+				Columns = {
+					"stockCode", // typeof(string) is implied
+					"stockName",
+					{"price", typeof(float)},
+					{"numberOwned", typeof(int)},
+					{"spent", typeof(float)},
+					{"stockValue", typeof(float)},
+					{"dividendValue", typeof(float)},
+					{"totalValue", typeof(float)},
+					{"profit_$", typeof(float)},
+					{"profit_%", typeof(float)}
+				}
+			};
 
 			// Create a total "stock" which will hold the totals of totalSpent, totalDividend, totalStockValue, totalValue, profit% and profit$.
 
@@ -69,21 +84,22 @@ namespace PortfolioTrackerApp
 
 				// Create a stock object and add it to the main datatable
 				Stock stock = new Stock(stockCode, mDatabase);
-				//mainDataTable.Rows.Add(stock.getCode(), 
-				//	stock.getName(), 
-				//	stock.getCurrentPrice(), 
-				//	stock.getTotalNumberOwned(), 
-				//	stock.getProfitDollar(), 
-				//	stock.getProfitPercent(),
-				//	stock.getTotalDividend(),
-				//	stock.getTotalSpent(),
-				//	stock.getTotalStockValue(),
-				//	stock.getTotalOverallValue());
+				mainDataTable.Rows.Add(stock.getCode(),
+					stock.getName(),
+					stock.getCurrentPrice(),
+					stock.getTotalNumberOwned(),
+					stock.getTotalSpent(),
+					stock.getTotalStockValue(),
+					stock.getTotalDividend(),
+					stock.getTotalOverallValue(),
+					stock.getProfitDollar(),
+					stock.getProfitPercent());		
 			}
 
 			// It will add these to a data table that can be used to populate the main table.
 
 			// From main data table populate the main table.
+			dataGridMainTable.ItemsSource = mainDataTable.DefaultView;
 
 			// Populate tables from database
 			updatePurchaseTable();
