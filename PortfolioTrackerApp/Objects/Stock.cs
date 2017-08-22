@@ -148,7 +148,10 @@ namespace PortfolioTrackerApp
 		 */
 		public float getTotalOverallValue()
 		{
-			return getTotalStockValue() + getTotalDividend();
+			// Because most of my stock have dividend reinvestment, don't include the dividends in the total value. They have
+			// already been included as separate purchases.
+			if (mCode.Equals("IJR.AX") || mCode.Equals("VEU.AX")) return getTotalStockValue() + getTotalDividend();
+			else return getTotalStockValue();
 		}
 
 		/* 
@@ -156,7 +159,10 @@ namespace PortfolioTrackerApp
 		 */
 		public float getProfitDollar()
 		{
-			return getTotalOverallValue() - getTotalSpent();
+			// Because most of my stock have dividend reinvestment, don't include the dividends in the total value. They have
+			// already been included as separate purchases.
+			if (mCode.Equals("IJR.AX") || mCode.Equals("VEU.AX")) return getTotalOverallValue() - getTotalSpent();
+			else return getTotalOverallValue() - getTotalSpent() + getTotalDividend();
 		}
 
 		/* 

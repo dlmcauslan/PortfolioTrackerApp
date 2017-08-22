@@ -35,3 +35,4 @@ PortfolioTrackerApp/bin/Release/Newtonsoft.Json.xml
 *.txt
 *.sqlite
 *.resources
+*.json

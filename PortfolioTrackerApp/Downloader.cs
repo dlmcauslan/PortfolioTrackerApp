@@ -49,7 +49,7 @@ namespace PortfolioTrackerApp
 		public void download()
 		{
 			String historicalDataUrl = URL_BASE + mStockCode;
-			Console.WriteLine(historicalDataUrl);
+			Console.WriteLine("Downloading data for " + mStockCode + ".");
 			using (WebClient downloader = new WebClient())
 			{
 				var jsonStr = downloader.DownloadString(historicalDataUrl);

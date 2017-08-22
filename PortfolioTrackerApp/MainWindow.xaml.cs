@@ -50,7 +50,8 @@ namespace PortfolioTrackerApp
 			/** Here's what we want to do on startup */
 			// From the purchases table, select distinct stock codes, put into an array of some sort
 			String stockCodeColumn = String.Format("DISTINCT {0}", DatabaseContract.Purchases.CODE);
-			List <string> stockCodes = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, stockCodeColumn).AsEnumerable().Select(x => x[0].ToString()).ToList();
+			String rowOrdering = String.Format("ORDER BY {0} ASC", DatabaseContract.Purchases.CODE);
+			List <string> stockCodes = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, stockCodeColumn, rowOrdering).AsEnumerable().Select(x => x[0].ToString()).ToList();
 
 			// Create a dataTable for main data.
 			DataTable mainDataTable = new DataTable
@@ -72,7 +73,9 @@ namespace PortfolioTrackerApp
 			// Create a total "stock" which will hold the totals of totalSpent, totalDividend, totalStockValue, totalValue, profit% and profit$.
 			float spentSum = 0;
 			float dividendSum = 0;
-			float stockValueSum = 0;			
+			float stockValueSum = 0;
+			float totalSum = 0;
+			float profit = 0;
 
 			// Loop over the different stock codes, creating a stock object for each one. Stock will have a code, name, currentPrice, totalNumberOwned, totalDividendValue, totalSpent. 
 			// It will have methods to get currentPrice, totalNumberOwned, totalDividendValue, totalSpent, totalStockValue, totalOverallValue, profit%, and profit$.
@@ -84,8 +87,22 @@ namespace PortfolioTrackerApp
 				// query the historical database to see what the most recent date is, to
 				// avoid doing this check multiple times per day.
 				// NEED loading screen probably
-				Downloader mDownloader = new Downloader(mDatabase, stockCode);
-				mDownloader.download();
+				String dateColumns = String.Format("MAX({0}) as MaxDate", DatabaseContract.Historical.DATE);
+				DateTime maxDownloadedDate = Utilities.toDateTime(mDatabase.SelectData(DatabaseContract.Historical.TABLE, dateColumns).Rows[0]["MaxDate"].ToString());
+				DateTime todaysDate = DateTime.Today;
+				DayOfWeek todaysDay = todaysDate.DayOfWeek;
+				int timeDifference = todaysDate.Subtract(maxDownloadedDate).Days;
+				// The historical data needs to be updated if it is more than 1 day behind. Note the data is downloaded
+				// from a US database, so the data is up to date if it is only 1 day behind. To account for weekends the data
+				// needs to be more than 4 days behind on tuesday, more than 3 days behind on monday, more than 2 days behind
+				// on sunday.
+				if ((todaysDay.Equals(DayOfWeek.Tuesday) & timeDifference > 4) | 
+					(todaysDay.Equals(DayOfWeek.Monday) & timeDifference > 3) | 
+					(todaysDay.Equals(DayOfWeek.Sunday) & timeDifference > 2) |
+					((int)todaysDay >= 3 & timeDifference > 1)) {					// Casting a DayOfWeek gives an integer from 0 (Sunday) to 6 (Saturday)
+					Downloader mDownloader = new Downloader(mDatabase, stockCode);
+					mDownloader.download();
+				}
 
 				// Create a stock object and add it to the main datatable
 				Stock stock = new Stock(stockCode, mDatabase);
@@ -103,11 +120,11 @@ namespace PortfolioTrackerApp
 				spentSum += stock.getTotalSpent();
 				dividendSum += stock.getTotalDividend();
 				stockValueSum += stock.getTotalStockValue();
+				totalSum += stock.getTotalOverallValue();
+				profit += stock.getProfitDollar();
 			}
 
 			// Add a summary row
-			float totalSum = stockValueSum + dividendSum;
-			float profit = totalSum - spentSum;
 			mainDataTable.Rows.Add("Summary", null, null, null, spentSum, stockValueSum, dividendSum, totalSum, profit, profit/spentSum*100);
 
 			// From main data table populate the main table.
@@ -120,7 +137,7 @@ namespace PortfolioTrackerApp
 			
 
 			// Testing charts
-			String query = String.Format("WHERE {0} = '{1}' ORDER BY {2} DESC", DatabaseContract.Historical.CODE, "IJR.AX", DatabaseContract.Historical.DATE);
+			String query = String.Format("WHERE {0} = '{1}' ORDER BY {2} DESC", DatabaseContract.Historical.CODE, "VEU.AX", DatabaseContract.Historical.DATE);
 			String columns = String.Format("{0}, {1}", DatabaseContract.Historical.DATE, DatabaseContract.Historical.PRICE);
 			DataTable testTable = mDatabase.SelectData(DatabaseContract.Historical.TABLE, columns, query);
 
