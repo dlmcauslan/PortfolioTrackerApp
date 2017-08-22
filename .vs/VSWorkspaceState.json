@@ -2,10 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\PortfolioTrackerApp",
-    "\\PortfolioTrackerApp\\bin",
-    "\\PortfolioTrackerApp\\bin\\Debug",
-    "\\PortfolioTrackerApp\\Database Files"
+    "\\PortfolioTrackerApp\\Database Files",
+    "\\PortfolioTrackerApp\\Objects"
   ],
-  "SelectedNode": "\\PortfolioTrackerApp\\Database Files\\DatabaseContract.cs",
+  "SelectedNode": "\\PortfolioTrackerApp\\Objects\\Stock.cs",
   "PreviewInSolutionExplorer": false
 }
