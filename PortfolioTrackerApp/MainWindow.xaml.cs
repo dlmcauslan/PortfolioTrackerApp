@@ -28,8 +28,7 @@ namespace PortfolioTrackerApp
 		public DatabaseFunctions mDatabase;
 		private DataTable mPurchasesTable;
 		private DataTable mDividendsTable;
-
-		
+		private List<string> mStockCodes;
 
 		public MainWindow()
 		{
@@ -43,98 +42,8 @@ namespace PortfolioTrackerApp
 			mDatabase.CreateTable(DatabaseContract.Dividends.CREATE_TABLE);
 			mDatabase.CreateTable(DatabaseContract.Historical.CREATE_TABLE);
 
-			// Uncomment to add some test data to the database
-			//testDatabase(mDatabase);
-
-
 			/** Here's what we want to do on startup */
-			// From the purchases table, select distinct stock codes, put into an array of some sort
-			String stockCodeColumn = String.Format("DISTINCT {0}", DatabaseContract.Purchases.CODE);
-			String rowOrdering = String.Format("ORDER BY {0} ASC", DatabaseContract.Purchases.CODE);
-			List <string> stockCodes = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, stockCodeColumn, rowOrdering).AsEnumerable().Select(x => x[0].ToString()).ToList();
-
-			// Create a dataTable for main data.
-			DataTable mainDataTable = new DataTable
-			{
-				Columns = {
-					"stockCode", // typeof(string) is implied
-					"stockName",
-					{"price", typeof(float)},
-					{"numberOwned", typeof(int)},
-					{"spent", typeof(float)},
-					{"stockValue", typeof(float)},
-					{"dividendValue", typeof(float)},
-					{"totalValue", typeof(float)},
-					{"profit_$", typeof(float)},
-					{"profit_%", typeof(float)}
-				}
-			};
-
-			// Create a total "stock" which will hold the totals of totalSpent, totalDividend, totalStockValue, totalValue, profit% and profit$.
-			float spentSum = 0;
-			float dividendSum = 0;
-			float stockValueSum = 0;
-			float totalSum = 0;
-			float profit = 0;
-
-			// Loop over the different stock codes, creating a stock object for each one. Stock will have a code, name, currentPrice, totalNumberOwned, totalDividendValue, totalSpent. 
-			// It will have methods to get currentPrice, totalNumberOwned, totalDividendValue, totalSpent, totalStockValue, totalOverallValue, profit%, and profit$.
-			foreach (string stockCode in stockCodes)
-			{
-				Console.WriteLine(stockCode);
-				// On opening the program get distinct stock-codes from purchases
-				// database and update the historical data for each of them. Maybe even 
-				// query the historical database to see what the most recent date is, to
-				// avoid doing this check multiple times per day.
-				// NEED loading screen probably
-				String dateColumns = String.Format("MAX({0}) as MaxDate", DatabaseContract.Historical.DATE);
-				DateTime maxDownloadedDate = Utilities.toDateTime(mDatabase.SelectData(DatabaseContract.Historical.TABLE, dateColumns).Rows[0]["MaxDate"].ToString());
-				DateTime todaysDate = DateTime.Today;
-				DayOfWeek todaysDay = todaysDate.DayOfWeek;
-				int timeDifference = todaysDate.Subtract(maxDownloadedDate).Days;
-				// The historical data needs to be updated if it is more than 1 day behind. Note the data is downloaded
-				// from a US database, so the data is up to date if it is only 1 day behind. To account for weekends the data
-				// needs to be more than 4 days behind on tuesday, more than 3 days behind on monday, more than 2 days behind
-				// on sunday.
-				if ((todaysDay.Equals(DayOfWeek.Tuesday) & timeDifference > 4) | 
-					(todaysDay.Equals(DayOfWeek.Monday) & timeDifference > 3) | 
-					(todaysDay.Equals(DayOfWeek.Sunday) & timeDifference > 2) |
-					((int)todaysDay >= 3 & timeDifference > 1)) {					// Casting a DayOfWeek gives an integer from 0 (Sunday) to 6 (Saturday)
-					Downloader mDownloader = new Downloader(mDatabase, stockCode);
-					mDownloader.download();
-				}
-
-				// Create a stock object and add it to the main datatable
-				Stock stock = new Stock(stockCode, mDatabase);
-				mainDataTable.Rows.Add(stock.getCode(),
-					stock.getName(),
-					stock.getCurrentPrice(),
-					stock.getTotalNumberOwned(),
-					stock.getTotalSpent(),
-					stock.getTotalStockValue(),
-					stock.getTotalDividend(),
-					stock.getTotalOverallValue(),
-					stock.getProfitDollar(),
-					stock.getProfitPercent());
-				// Calculate the overall sums
-				spentSum += stock.getTotalSpent();
-				dividendSum += stock.getTotalDividend();
-				stockValueSum += stock.getTotalStockValue();
-				totalSum += stock.getTotalOverallValue();
-				profit += stock.getProfitDollar();
-			}
-
-			// Add a summary row
-			mainDataTable.Rows.Add("Summary", null, null, null, spentSum, stockValueSum, dividendSum, totalSum, profit, profit/spentSum*100);
-
-			// From main data table populate the main table.
-			dataGridMainTable.ItemsSource = mainDataTable.DefaultView;
-
-			// Populate tables from database
-			updatePurchaseTable();
-			updateDividendsTable();
-
-			
+			startupProcesses();
 
 			// Testing charts
 			String query = String.Format("WHERE {0} = '{1}' ORDER BY {2} DESC", DatabaseContract.Historical.CODE, "VEU.AX", DatabaseContract.Historical.DATE);
@@ -179,11 +88,125 @@ namespace PortfolioTrackerApp
 		//public ChartValues<ObservablePoint> ValuesA { get; set; }
 		//public ChartValues<ObservablePoint> ValuesB { get; set; }
 
+		/**
+		 * Method called at startup to run all the backend stuff that needs to be done to get the
+		 * app ready.
+		 */
+		private void startupProcesses()
+		{
+			// From the purchases table, select distinct stock codes, put into a List
+			String stockCodeColumn = String.Format("DISTINCT {0}", DatabaseContract.Purchases.CODE);
+			String rowOrdering = String.Format("ORDER BY {0} ASC", DatabaseContract.Purchases.CODE);
+			mStockCodes = mDatabase.SelectData(DatabaseContract.Purchases.TABLE, stockCodeColumn, rowOrdering).AsEnumerable().Select(x => x[0].ToString()).ToList();
+
+			// Update historical data for the stocks if required
+			updateHistoricalData();
+
+
+			// Populate tables from database
+			updateMainTable();
+			updatePurchaseTable();
+			updateDividendsTable();
+		}
+
+		/**
+		 * Updates the historical stock data if required - should happen at most once a day.
+		 */
+		private void updateHistoricalData()
+		{
+			// On opening the program get distinct stock-codes from purchases
+			// database and update the historical data for each of them. Maybe even 
+			// query the historical database to see what the most recent date is, to
+			// avoid doing this check multiple times per day.
+			// NEED loading screen probably
+			String dateColumns = String.Format("MAX({0}) as MaxDate", DatabaseContract.Historical.DATE);
+			DateTime maxDownloadedDate = Utilities.toDateTime(mDatabase.SelectData(DatabaseContract.Historical.TABLE, dateColumns).Rows[0]["MaxDate"].ToString());
+			DateTime todaysDate = DateTime.Today;
+			DayOfWeek todaysDay = todaysDate.DayOfWeek;
+			int timeDifference = todaysDate.Subtract(maxDownloadedDate).Days;
+			// The historical data needs to be updated if it is more than 1 day behind. Note the data is downloaded
+			// from a US database, so the data is up to date if it is only 1 day behind. To account for weekends the data
+			// needs to be more than 4 days behind on tuesday, more than 3 days behind on monday, more than 2 days behind
+			// on sunday.
+			if ((todaysDay.Equals(DayOfWeek.Tuesday) & timeDifference > 4) |
+				(todaysDay.Equals(DayOfWeek.Monday) & timeDifference > 3) |
+				(todaysDay.Equals(DayOfWeek.Sunday) & timeDifference > 2) |
+				((int)todaysDay >= 3 & timeDifference > 1))
+			{                   // Casting a DayOfWeek gives an integer from 0 (Sunday) to 6 (Saturday)
+				foreach (string stockCode in mStockCodes)
+				{
+					// Download stock data
+					Downloader mDownloader = new Downloader(mDatabase, stockCode);
+					mDownloader.download();
+				}
+			}
+		}
+
+		/**
+		 * Updates the data in the main table on the front page.
+		 */
+		private void updateMainTable()
+		{
+			// Create a dataTable for main data.
+			DataTable mainDataTable = new DataTable
+			{
+				Columns = {
+					"stockCode", // typeof(string) is implied
+					"stockName",
+					{"price", typeof(float)},
+					{"numberOwned", typeof(int)},
+					{"spent", typeof(float)},
+					{"stockValue", typeof(float)},
+					{"dividendValue", typeof(float)},
+					{"totalValue", typeof(float)},
+					{"profit_$", typeof(float)},
+					{"profit_%", typeof(float)}
+				}
+			};
+
+			// Create a total "stock" which will hold the totals of totalSpent, totalDividend, totalStockValue, totalValue, profit% and profit$.
+			float spentSum = 0;
+			float dividendSum = 0;
+			float stockValueSum = 0;
+			float totalSum = 0;
+			float profit = 0;
+
+			// Loop over the different stock codes, creating a stock object for each one. Stock will have a code, name, currentPrice, totalNumberOwned, totalDividendValue, totalSpent. 
+			// It will have methods to get currentPrice, totalNumberOwned, totalDividendValue, totalSpent, totalStockValue, totalOverallValue, profit%, and profit$.
+			foreach (string stockCode in mStockCodes)
+			{
+				// Create a stock object and add it to the main datatable
+				Stock stock = new Stock(stockCode, mDatabase);
+				mainDataTable.Rows.Add(stock.getCode(),
+					stock.getName(),
+					stock.getCurrentPrice(),
+					stock.getTotalNumberOwned(),
+					stock.getTotalSpent(),
+					stock.getTotalStockValue(),
+					stock.getTotalDividend(),
+					stock.getTotalOverallValue(),
+					stock.getProfitDollar(),
+					stock.getProfitPercent());
+				// Calculate the overall sums
+				spentSum += stock.getTotalSpent();
+				dividendSum += stock.getTotalDividend();
+				stockValueSum += stock.getTotalStockValue();
+				totalSum += stock.getTotalOverallValue();
+				profit += stock.getProfitDollar();
+			}
+
+			// Add a summary row
+			mainDataTable.Rows.Add("Summary", null, null, null, spentSum, stockValueSum, dividendSum, totalSum, profit, profit / spentSum * 100);
+
+			// From main data table populate the main table.
+			dataGridMainTable.ItemsSource = mainDataTable.DefaultView;
+		}
+
 		/*********************************
 		 * Purchases tab methods
 		 ********************************/
 
-		/*
+		/**
 		 * Opens a new addPurchasePopup on clicking the AddPurchaseButton
 		 */
 		private void AddPurchaseButton_Click(object sender, RoutedEventArgs e)
@@ -194,7 +217,7 @@ namespace PortfolioTrackerApp
 			if (addPurchase.ShowDialog() == true) updatePurchaseTable(); 
 		}
 
-		/*
+		/**
 		 * Opens a new addPurchasePopup (configured as a sale) on clicking the AddSaleButton
 		 */
 		private void AddSaleButton_Click(object sender, RoutedEventArgs e)
@@ -203,7 +226,7 @@ namespace PortfolioTrackerApp
 			if (addPurchase.ShowDialog() == true) updatePurchaseTable();
 		}
 
-		/*
+		/**
 		 * Opens a new addPurchasePopup (configured as an edit purchase) on clicking the EditPurchaseButton
 		 */
 		private void EditPurchaseButton_Click(object sender, RoutedEventArgs e)
@@ -220,7 +243,7 @@ namespace PortfolioTrackerApp
 			}
 		}
 
-		/*
+		/**
 		 * Asks the user if they want to delete a purchase from the database.
 		 */
 		private void DeletePurchaseButton_Click(object sender, RoutedEventArgs e)
@@ -242,7 +265,7 @@ namespace PortfolioTrackerApp
 			}
 		}
 
-		/*
+		/**
 		 * Updates the purchases datagrid from the sql database.
 		 * Creates Price in $ column and Total cost column.
 		 * Call this method anytime the purchases database has been modified
@@ -270,7 +293,7 @@ namespace PortfolioTrackerApp
 		 * Dividends tab methods
 		 ********************************/
 
-		/*
+		/**
 		 * Opens a new addDividendPopup on clicking the AddDividendButton
 		 */
 		private void AddDividendButton_Click(object sender, RoutedEventArgs e)
@@ -281,7 +304,7 @@ namespace PortfolioTrackerApp
 			if (addDividend.ShowDialog() == true) updateDividendsTable();
 		}
 
-		/*
+		/**
 		 * Opens a new addDividendPopup (configured as and edit dividend popup) on clicking the EditDividendButton
 		 */
 		private void EditDividendButton_Click(object sender, RoutedEventArgs e)
@@ -298,7 +321,7 @@ namespace PortfolioTrackerApp
 			}
 		}
 
-		/*
+		/**
 		 * Opens a warning box to make sure the user wishes to delete the selected item.
 		 */
 		private void DeleteDividendButton_Click(object sender, RoutedEventArgs e)
@@ -320,7 +343,7 @@ namespace PortfolioTrackerApp
 			}
 		}
 
-		/*
+		/**
 		 * Updates the dividends datagrid from the sql database.
 		 * Creates Amount in $ column
 		 * Call this method anytime the dividends database has been modified
@@ -341,7 +364,7 @@ namespace PortfolioTrackerApp
 			dataGridDividends.ItemsSource = mDividendsTable.DefaultView;
 		}
 
-		/*
+		/**
 		 * A bunch of statements for database testing
 		 */
 		private void testDatabase(DatabaseFunctions database)
@@ -359,20 +382,7 @@ namespace PortfolioTrackerApp
 			String testPurchaseSet = DatabaseContract.Purchases.CODE + "= 'IJR', " + DatabaseContract.Purchases.NUMBER + "= 100 ";
 			String testCondition = DatabaseContract.Purchases.ID + " = 5";
 			int updateSuccess = database.EditData(DatabaseContract.Purchases.TABLE, testPurchaseSet, testCondition);
-			Console.WriteLine(updateSuccess);
-
-			// This doesn't work because need to close the database!!!!
-			//String testCols = "*";
-			//SQLiteDataReader reader = database.SelectData(DatabaseContract.Purchases.TABLE, testCols, "");
-			//while (reader.Read())
-			//{
-			//	Console.WriteLine(reader["_ID"] + " " + reader[DatabaseContract.Purchases.CODE]);
-			//}
-
-			
+			Console.WriteLine(updateSuccess);			
 		}
-
-		
-
 	}
 }
