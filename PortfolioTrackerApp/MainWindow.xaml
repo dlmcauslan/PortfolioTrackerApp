@@ -14,7 +14,7 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <TabControl BorderThickness="0">
+        <TabControl BorderThickness="0" SelectionChanged="TabControl_SelectionChanged">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="FontSize" Value="18"/>
@@ -38,7 +38,7 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Header="Home">
+            <TabItem Header="Home" Name="HomeTab">
                 <Grid Background="#10000000">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

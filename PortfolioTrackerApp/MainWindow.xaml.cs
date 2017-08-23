@@ -124,15 +124,14 @@ namespace PortfolioTrackerApp
 			DateTime todaysDate = DateTime.Today;
 			DayOfWeek todaysDay = todaysDate.DayOfWeek;
 			int timeDifference = todaysDate.Subtract(maxDownloadedDate).Days;
-			// The historical data needs to be updated if it is more than 1 day behind. Note the data is downloaded
-			// from a US database, so the data is up to date if it is only 1 day behind. To account for weekends the data
+			// The historical data needs to be updated if it is more than 2 days behind. Note the data is downloaded
+			// from a US database, so the data is up to date if it is only 2 days behind. To account for weekends the data
 			// needs to be more than 4 days behind on tuesday, more than 3 days behind on monday, more than 2 days behind
 			// on sunday.
 			if ((todaysDay.Equals(DayOfWeek.Tuesday) & timeDifference > 4) |
 				(todaysDay.Equals(DayOfWeek.Monday) & timeDifference > 3) |
-				(todaysDay.Equals(DayOfWeek.Sunday) & timeDifference > 2) |
-				((int)todaysDay >= 3 & timeDifference > 1))
-			{                   // Casting a DayOfWeek gives an integer from 0 (Sunday) to 6 (Saturday)
+				((todaysDay.Equals(DayOfWeek.Sunday) | (int)todaysDay >= 3) & timeDifference > 2))     // Casting a DayOfWeek gives an integer from 0 (Sunday) to 6 (Saturday)
+			{                   
 				foreach (string stockCode in mStockCodes)
 				{
 					// Download stock data
@@ -200,6 +199,14 @@ namespace PortfolioTrackerApp
 
 			// From main data table populate the main table.
 			dataGridMainTable.ItemsSource = mainDataTable.DefaultView;
+		}
+
+		/**
+		 * Runs methods to update data on tab pages if different tabs are selected. 
+		 */
+		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (HomeTab.IsSelected) updateMainTable();
 		}
 
 		/*********************************
